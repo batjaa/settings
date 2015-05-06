@@ -22,3 +22,8 @@ Sublime 3 configurations
 ### Install the following plugins in no particular order
 
 * [Trailing Spaces](https://github.com/SublimeText/TrailingSpaces)
+
+### Set up default snippets
+
+* Copy [default.sublime-snippet](https://github.com/batjaa/settings/blob/master/sublime/default.sublime-snippet) into `Packages->User`
+  *Hint: Preferences -> Browser Packages*
