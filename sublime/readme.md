@@ -22,6 +22,10 @@ Sublime 3 configurations
 ### Install the following plugins in no particular order
 
 * [Trailing Spaces](https://github.com/SublimeText/TrailingSpaces)
+* [JSHint](https://packagecontrol.io/packages/SublimeLinter-jshint)
+  * (Sublime Linter)[http://sublimelinter.readthedocs.org/en/latest/installation.html] is required
+* [JSCS](https://packagecontrol.io/packages/SublimeLinter-jscs)
+* [AutoFileName](https://packagecontrol.io/packages/AutoFileName)
 
 ### Set up default snippets
 
