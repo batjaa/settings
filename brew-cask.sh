@@ -11,7 +11,7 @@ brew install caskroom/cask/brew-cask
 brew tap caskroom/versions
 
 # daily
-brew cask install spectacle
+brew cask install slate
 brew cask install dropbox
 brew cask install google-drive
 # brew cask install gyazo
