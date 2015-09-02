@@ -154,7 +154,7 @@
     tool = p4merge
 
 [mergetool "p4merge"]
-    cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+    cmd = p4merge "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
     trustExitCode = false
 
 [push]
