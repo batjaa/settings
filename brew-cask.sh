@@ -17,7 +17,7 @@ brew cask install dropbox
 brew cask install google-drive
 # brew cask install gyazo
 # brew cask install rescuetime
-brew cask install flux
+# brew cask install flux
 
 # dev
 brew cask install iterm2
