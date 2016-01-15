@@ -22,7 +22,7 @@ brew cask install google-drive
 # dev
 brew cask install iterm2
 brew cask install p4merge
-brew cask install sublime-text
+brew cask install sublime-text3
 brew cask install dash
 # brew cask install imagealpha
 # brew cask install imageoptim
