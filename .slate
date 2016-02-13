@@ -47,6 +47,7 @@ alias 2-top-r move screenOriginX+screenSizeX/2;screenOriginY                 scr
 alias 2-left  move screenOriginX;screenOriginY                               screenSizeX/2;screenSizeY       ${mon-main}
 alias 2-right move screenOriginX+screenSizeX/2;screenOriginY                 screenSizeX/2;screenSizeY       ${mon-main}
 
+alias 3-main  move screenOriginX;screenOriginY                               screenSizeX;screenSizeY         ${mon-right}
 alias 3-left  move screenOriginX;screenOriginY                               screenSizeX/2;screenSizeY       ${mon-right}
 alias 3-right move screenOriginX+screenSizeX/2;screenOriginY                 screenSizeX/2;screenSizeY       ${mon-right}
 alias 3-l-bot move screenOriginX;screenOriginY+screenSizeY/2                 screenSizeX/2;screenSizeY/2     ${mon-right}
@@ -56,11 +57,11 @@ alias 3-r-bot move screenOriginX+screenSizeX/2;screenOriginY+screenSizeY/2   scr
 
 # 3 Monitor layout
 layout 3monitors 'iTerm'                                  ${1-main}
-layout 3monitors 'Google Chrome':REPEAT_LAST,TITLE_ORDER_REGEX=^Developer\sTools\s-\s.+$  ${3-left} | ${2-main}
+layout 3monitors 'Google Chrome':REPEAT_LAST,TITLE_ORDER_REGEX=^Developer\sTools\s-\s.+$  ${3-main} | ${2-main}
 layout 3monitors 'Sublime Text'                           ${2-main}
 layout 3monitors 'Firefox':REPEAT                         ${2-mid}
 layout 3monitors 'Spotify':REPEAT                         ${3-l-top}
-layout 3monitors 'Slack':REPEAT                           ${3-r-bot}
+layout 3monitors 'Slack':REPEAT                           ${1-main}
 
 # 2 Monitor layout
 # layout 2monitors 'iTerm':SORT_TITLE                       ${2-bot-l} | ${2-bot-m} | ${2-bot-r}
