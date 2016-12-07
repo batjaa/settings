@@ -8,7 +8,7 @@ config focusCheckWidthMax 3000
 
 # Defaults
 alias finder 'Finder'
-alias terminal 'iTerm'
+alias terminal 'iTerm2'
 alias browser 'Google Chrome'
 alias editor 'Sublime Text'
 alias musicPayer 'Spotify'
