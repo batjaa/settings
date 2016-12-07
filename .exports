@@ -1,0 +1,2 @@
+# Set node env to dev
+export NODE_ENV='development';
