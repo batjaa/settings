@@ -14,6 +14,7 @@ brew tap caskroom/versions
 brew cask install slate
 brew cask install karabiner
 brew cask install dropbox
+brew cask install slack
 brew cask install google-drive
 # brew cask install gyazo
 brew cask install rescuetime
@@ -24,6 +25,7 @@ brew cask install iterm2
 brew cask install p4merge
 brew cask install sublime-text3
 brew cask install dash
+brew cask install postman
 # brew cask install imagealpha
 # brew cask install imageoptim
 
@@ -33,6 +35,7 @@ brew cask install dash
 # brew cask install horndis               # usb tethering
 
 # browsers
+brew cask install google-chrome
 brew cask install google-chrome-canary
 brew cask install firefox-nightly
 brew cask install webkit-nightly
