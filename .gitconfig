@@ -39,6 +39,9 @@
     # Stash untracked and tracked files
     staash = stash --include-untracked
 
+    # It checks that your local copy of the ref that you’re overwriting is up-to-date before overwriting it
+    please = push --force-with-lease
+
     # Switch to a branch, creating it if necessary
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
