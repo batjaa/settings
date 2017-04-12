@@ -1,15 +1,6 @@
 Sublime 3 configurations
 ========================
 
-### Settings
-
-```json
-// The number of spaces a tab is considered equal to
-"tab_size": 2,
-// Set to true to insert spaces when tab is pressed
-"translate_tabs_to_spaces": true,
-```
-
 ### Install [Package Controller](https://packagecontrol.io/installation)
 
 1. Open console (View > Show Console)
@@ -26,8 +17,41 @@ Sublime 3 configurations
   * (Sublime Linter)[http://sublimelinter.readthedocs.org/en/latest/installation.html] is required
 * [JSCS](https://packagecontrol.io/packages/SublimeLinter-jscs)
 * [AutoFileName](https://packagecontrol.io/packages/AutoFileName)
+* [Afterglow](https://github.com/YabataDesign/afterglow-theme)
+* Git
+* GitGutter
+* Alignment
+* DocBlockr
+* Sidebarenhancements
 
 ### Set up default snippets
 
 * Copy [default.sublime-snippet](https://github.com/batjaa/settings/blob/master/sublime/default.sublime-snippet) into `Packages->User`
   *Hint: Preferences -> Browser Packages*
+
+### Settings
+
+User settings
+
+```json
+// The number of spaces a tab is considered equal to
+"tab_size": 2,
+// Set to true to insert spaces when tab is pressed
+"translate_tabs_to_spaces": true,
+"theme": "Afterglow-orange.sublime-theme",
+"color_scheme": "Packages/Theme - Afterglow/Afterglow.tmTheme"
+"status_bar_brighter": true,
+"show_full_path": true,
+"tabs_small": true,
+```
+
+User key binding
+
+```json
+[
+  {
+    "keys": ["super+option+w"], "command": "close_workspace"
+  },
+]
+```
+
