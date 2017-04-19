@@ -23,6 +23,7 @@ Sublime 3 configurations
 * Alignment
 * DocBlockr
 * Sidebarenhancements
+* [URLEncode](https://packagecontrol.io/packages/URLEncode)
 
 ### Set up default snippets
 
