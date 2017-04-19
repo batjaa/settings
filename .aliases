@@ -51,3 +51,8 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 
 # Lock the screen (when going AFK)
 alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+
+# Quartzy related shortcuts
+alias php56="brew unlink php70 && brew unlink php71 && brew link php56"
+alias php70="brew unlink php56 && brew unlink php71 && brew link php70"
+alias php71="brew unlink php70 && brew unlink php56 && brew link php71"
