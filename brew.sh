@@ -65,6 +65,7 @@ brew install rename
 # brew install tree
 # brew install webkit2png
 # brew install zopfli
+brew install brightness
 
 # Remove outdated versions from the cellar.
 brew cleanup
