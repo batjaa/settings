@@ -52,6 +52,7 @@ User key binding
 ```json
 [
   { "keys": ["super+option+w"], "command": "close_workspace" },
+  { "keys": ["super+shift+w"], "command": "close_all" }
 ]
 ```
 
