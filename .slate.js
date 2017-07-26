@@ -12,6 +12,15 @@ var monitorLaptop = '1920x1200';
 var monitorMain   = '2560x1440';
 
 // Operations
+var full = S.op("move", {
+  x: 'screenOriginX',
+  y: 'screenOriginY',
+  width: 'screenSizeX',
+  height: 'screenSizeY'
+});
+var leftHalf = full.dup({width: 'screenSizeX/2'});
+var rightHalf = leftHalf.dup({x: 'screenOriginX+screenSizeX/2'});
+
 var laptopFull = S.op('move', {
   'screen': monitorLaptop,
   'x': 'screenOriginX',
@@ -59,16 +68,16 @@ var mainRightTop = mainLeftTop.dup({ 'x': 'screenOriginX+screenSizeX*2/3' });
 var mainRightBot = mainRightTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
 
 var brightness0 = S.op('shell', {
-  command: '/usr/local/Cellar/brightness/1.2/bin/brightness -d 1 0',
+  command: '/usr/local/Cellar/brightness/1.2/bin/brightness 0',
 });
 var brightness4 = S.op('shell', {
-  command: '/usr/local/Cellar/brightness/1.2/bin/brightness -d 1 0.4',
+  command: '/usr/local/Cellar/brightness/1.2/bin/brightness 0.4',
 });
 var brightness8 = S.op('shell', {
-  command: '/usr/local/Cellar/brightness/1.2/bin/brightness -d 1 0.8',
+  command: '/usr/local/Cellar/brightness/1.2/bin/brightness 0.8',
 });
 var brightness10 = S.op('shell', {
-  command: '/usr/local/Cellar/brightness/1.2/bin/brightness -d 1 1',
+  command: '/usr/local/Cellar/brightness/1.2/bin/brightness 1',
 });
 
 // common layout hashes
@@ -117,37 +126,44 @@ var genBrowserHash = function(regexRightTop, regexRightBot) {
 }
 
 // Laptop connected but mirroring layout
-var mainMonitorLayout = S.lay('mainMonitorLayout', {
+var externalMonitorOnly = S.lay('externalMonitorOnly', {
   'Slack': mainHalfHash,
   'iTerm2': mainHalfHash,
   'Google Chrome': genBrowserHash(/^Developer\sTools\s-\s.+$/, /YouTube/),
   'Spotify': mainHalfHash,
-  'Sublime Text': mainBigHash
+  'Sublime Text': mainBigHash,
+  'PhpStorm': mainBigHash,
 });
 
 // 1 monitor layout
-var oneMonitorLayout = S.lay('oneMonitor', {
-  // 'Slack': mainHalfHash,
-  // 'iTerm2': mainHalfHash,
-  // 'Google Chrome': genBrowserHash(/^Developer\sTools\s-\s.+$/, /YouTube/),
-  // 'Spotify': mainHalfHash,
-  // 'Sublime Text': mainBigHash
+var laptopLayout = S.lay('laptopLayout', {
+  'Slack': laptopHalfHash,
+  'iTerm2': laptopFullHash,
+  'Google Chrome': laptopFullHash,
+  'Spotify': laptopHalfHash,
+  'Sublime Text': laptopFullHash,
+  'PhpStorm': laptopFullHash,
 });
 
 // Layout Operations
 // var twoMonitor = S.op('layout', { 'name': twoButOneMonitorLayout });
-var mainMonitor = S.op('layout', { 'name': mainMonitorLayout });
-// var oneMonitor = S.op('layout', { 'name': twoButOneMonitorLayout });
+var externalMonitor = S.op('layout', { 'name': externalMonitorOnly });
+var oneMonitor = S.op('layout', { 'name': laptopLayout });
 
 function mirroringSetup() {
-  mainMonitor.run();
+  externalMonitor.run();
   brightness0.run();
 }
 
 function laptopSetup() {
-  oneMonitorLayout.run();
+  oneMonitor.run();
   brightness8.run();
 }
+
+// Defaults
+// S.def(2, twoButOneMonitorLayout);
+S.def(['2560x1440'], mirroringSetup);
+S.def(['1920x1200'], laptopSetup);
 
 var universalLayout = function() {
   // Should probably make sure the resolutions match but w/e
@@ -162,13 +178,6 @@ var universalLayout = function() {
     }
   }
 };
-
-// Defaults
-// S.def(2, twoButOneMonitorLayout);
-S.def(['2560x1440'], mirroringSetup);
-S.def(['1920x1200'], oneMonitorLayout);
-
-
 
 // Batch bind everything. Less typing.
 S.bnda({
@@ -201,12 +210,12 @@ S.bnda({
 
   // Resize Bindings
   // NOTE: some of these may *not* work if you have not removed the expose/spaces/mission control bindings
-  // 'right:ctrl': S.op('resize', { 'width': '+10%', 'height': '+0' }),
-  // 'left:ctrl': S.op('resize', { 'width': '-10%', 'height': '+0' }),
-  // 'up:ctrl': S.op('resize', { 'width': '+0', 'height': '-10%' }),
-  // 'down:ctrl': S.op('resize', { 'width': '+0', 'height': '+10%' }),
-  // 'right:alt': S.op('resize', { 'width': '-10%', 'height': '+0', 'anchor': 'bottom-right' }),
-  // 'left:alt': S.op('resize', { 'width': '+10%', 'height': '+0', 'anchor': 'bottom-right' }),
+  'right:ctrl;alt': rightHalf,
+  'left:ctrl;alt': leftHalf,
+  'up:ctrl;alt': full,
+  // 'down:ctrl;alt': S.op('resize', { 'width': '+0', 'height': '+10%' }),
+  'right:ctrl;alt;shift': S.op('resize', { 'width': '+10%' }),
+  'left:ctrl;alt;shift': S.op('resize', { 'width': '-10%' }),
   // 'up:alt': S.op('resize', { 'width': '+0', 'height': '+10%', 'anchor': 'bottom-right' }),
   // 'down:alt': S.op('resize', { 'width': '+0', 'height': '-10%', 'anchor': 'bottom-right' }),
 
@@ -255,8 +264,8 @@ S.bnda({
   // Switch currently doesn't work well so I'm commenting it out until I fix it.
   //'tab:cmd': S.op('switch'),
 
-  '1:ctrl': brightness0,
-  '2:ctrl': brightness10,
+  'r:cmd;alt': S.op('relaunch'),
+
   // Grid
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
