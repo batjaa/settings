@@ -166,7 +166,7 @@
     tool = p4merge
 
 [mergetool "p4merge"]
-    cmd = p4merge "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
+    path = "/Applications/p4merge.app/Contents/MacOS/p4merge"
     trustExitCode = true
 
 [push]

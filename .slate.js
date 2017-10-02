@@ -50,21 +50,28 @@ var mainThird = S.op('move', {
   'width': 'screenSizeX/3',
   'height': 'screenSizeY'
 });
+var mainFivth = S.op('move', {
+  'screen': monitorMain,
+  'x': 'screenOriginX',
+  'y': 'screenOriginY',
+  'width': 'screenSizeX/5',
+  'height': 'screenSizeY'
+});
 var mainBig = S.op('move', {
   'screen': monitorMain,
   'x': 'screenOriginX',
   'y': 'screenOriginY',
-  'width': 'screenSizeX*2/3',
+  'width': 'screenSizeX*4/5',
   'height': 'screenSizeY',
 });
 var mainLeft = mainHalf.dup({});
-var mainMid = mainThird.dup({ 'x': 'screenOriginX+screenSizeX/3' });
+var mainMid = mainFivth.dup({ 'x': 'screenOriginX+screenSizeX/5' });
 var mainRight = mainHalf.dup({ 'x': 'screenOriginX+screenSizeX/2' });
-var mainLeftTop = mainThird.dup({ 'height': 'screenSizeY/2' });
+var mainLeftTop = mainFivth.dup({ 'height': 'screenSizeY/2' });
 var mainLeftBot = mainLeftTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
 var mainMidTop = mainMid.dup({ 'height': 'screenSizeY/2' });
 var mainMidBot = mainMidTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
-var mainRightTop = mainLeftTop.dup({ 'x': 'screenOriginX+screenSizeX*2/3' });
+var mainRightTop = mainLeftTop.dup({ 'x': 'screenOriginX+screenSizeX*4/5' });
 var mainRightBot = mainRightTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
 
 var brightness0 = S.op('shell', {
