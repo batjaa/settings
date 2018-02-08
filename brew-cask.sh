@@ -18,6 +18,7 @@ brew cask install slack
 brew cask install google-drive
 # brew cask install gyazo
 brew cask install rescuetime
+brew cask install alfred
 # brew cask install flux
 
 # dev

@@ -135,7 +135,7 @@ var genBrowserHash = function(regexRightTop, regexRightBot) {
 // Laptop connected but mirroring layout
 var externalMonitorOnly = S.lay('externalMonitorOnly', {
   'Slack': mainHalfHash,
-  'iTerm2': mainHalfHash,
+  'iTerm2': mainBigHash,
   'Google Chrome': genBrowserHash(/^Developer\sTools\s-\s.+$/, /YouTube/),
   'Spotify': mainHalfHash,
   'Sublime Text': mainBigHash,

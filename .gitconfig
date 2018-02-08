@@ -27,7 +27,7 @@
     # Commit all changes
     ca = !git add -A && git commit -av
 
-    # Commit all changes
+    # Commit all changes with message
     cam = !git add -A && git commit -am
 
     # Commit staged changes
