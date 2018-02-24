@@ -61,7 +61,7 @@ var mainBig = S.op('move', {
   'screen': monitorMain,
   'x': 'screenOriginX',
   'y': 'screenOriginY',
-  'width': 'screenSizeX*4/5',
+  'width': 'screenSizeX*4/5 + 40',
   'height': 'screenSizeY',
 });
 var mainLeft = mainHalf.dup({});

@@ -48,6 +48,7 @@ brew install woff2
 # Install other useful binaries.
 brew install ack
 brew install dark-mode
+brew install moreutils
 #brew install exiv2
 brew install git
 brew install git-lfs

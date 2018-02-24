@@ -78,6 +78,10 @@
     # a.k.a. ‘delete merged’
     dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
+    # Do the same as above but use it when squach merged
+    gone = "!git branch --merged master | grep -v \"\\* master\""
+    prune-gone = "!git gone | vipe | awk '{ print $1 }' | xargs -n 1 git branch -D"
+
     # List contributors with number of commits
     contributors = shortlog --summary --numbered
 
