@@ -7,7 +7,7 @@ Sublime 3 configurations
 2. Copy and run the following code (Python snippet)
 
    ```
-   import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try Mnual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
+   import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
    ```
 
 ### Install the following plugins in no particular order
@@ -41,7 +41,7 @@ User settings
 // Set to true to insert spaces when tab is pressed
 "translate_tabs_to_spaces": true,
 "theme": "Afterglow-orange.sublime-theme",
-"color_scheme": "Packages/Theme - Afterglow/Afterglow.tmTheme"
+"color_scheme": "Packages/Theme - Afterglow/Afterglow.tmTheme",
 "status_bar_brighter": true,
 "show_full_path": true,
 "tabs_small": true,
