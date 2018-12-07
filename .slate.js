@@ -276,7 +276,7 @@ S.bnda({
   // Grid
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
-    gridOption.grids[monitorMain] = { width: 4, height: 3 };
+    gridOption.grids[monitorMain] = { width: 7, height: 7 };
 
     S.op('grid', gridOption).run();
   },
