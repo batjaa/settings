@@ -191,7 +191,7 @@ S.bnda({
   // Layout Bindings
   'padEnter:ctrl': universalLayout,
 
-  '`:alt':       S.op('focus', { 'app': 'Spotify' }),
+  'esc:alt':     S.op('focus', { 'app': 'Spotify' }),
   '1:alt':       S.op('focus', { 'app': 'Finder' }),
   '2:alt':       S.op('focus', { 'app': 'iTerm2' }),
   '3:alt':       S.op('focus', { 'app': 'Google Chrome' }),
@@ -276,7 +276,7 @@ S.bnda({
   // Grid
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
-    gridOption.grids[monitorMain] = { width: 7, height: 7 };
+    gridOption.grids[monitorMain] = { width: 5, height: 4 };
 
     S.op('grid', gridOption).run();
   },
