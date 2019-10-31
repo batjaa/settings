@@ -8,13 +8,13 @@ Git configurations
 
   ```
   [diff]
-    tool = p4merge
-  [difftool "p4merge"]
-    cmd = "p4merge.exe $LOCAL $REMOTE"
+    tool = smerge
+  [difftool "smerge"]
+    cmd = "smerge $LOCAL $REMOTE"
   [merge]
-    tool = p4merge
-  [mergetool "p4merge"]
-    cmd = "p4merge.exe $BASE $LOCAL $REMOTE $MERGED"
+    tool = smerge
+  [mergetool "smerge"]
+    cmd = "smerge $BASE $LOCAL $REMOTE $MERGED"
     trustExitCode = true
     keepBackup = false
   ```
