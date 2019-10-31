@@ -197,6 +197,7 @@ S.bnda({
   '3:alt':       S.op('focus', { 'app': 'Google Chrome' }),
   '4:alt':       S.op('focus', { 'app': 'Sublime Text' }),
   '4:alt;shift': S.op('focus', { 'app': 'PhpStorm' }),
+  '4:alt;cmd':   S.op('focus', { 'app': 'Code' }),
   '5:alt':       S.op('focus', { 'app': 'Slack' }),
 
   // Basic Location Bindings
