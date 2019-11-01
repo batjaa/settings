@@ -52,7 +52,9 @@ brew install moreutils
 #brew install exiv2
 brew install docker
 brew install git
-brew install git
+brew install hub
+brew install composer
+brew install nvm
 brew install git-lfs
 brew install android-sdk
 # brew install imagemagick --with-webp
