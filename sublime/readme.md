@@ -89,3 +89,22 @@ User key binding
   { "keys": ["shift+f12"], "command": "goto_definition_scope" },
 ]
 ```
+
+### Template project file
+
+```json
+{
+  "folders":
+  [
+    {
+      "path": ".",
+      "folder_exclude_patterns": [
+        "tmp",
+        "dist",
+        "node_modules",
+        "bower_components"
+      ],
+    }
+  ]
+}
+```
