@@ -29,6 +29,7 @@ var laptopFull = S.op('move', {
   'height': 'screenSizeY'
 });
 var laptopHalf = laptopFull.dup({'width': 'screenSizeX/2'})
+
 var mainFull = S.op('move', {
   'screen': monitorMain,
   'x': 'screenOriginX',
@@ -54,24 +55,24 @@ var mainFivth = S.op('move', {
   'screen': monitorMain,
   'x': 'screenOriginX',
   'y': 'screenOriginY',
-  'width': 'screenSizeX/5',
+  'width': 'screenSizeX/4',
   'height': 'screenSizeY'
 });
 var mainBig = S.op('move', {
   'screen': monitorMain,
   'x': 'screenOriginX',
   'y': 'screenOriginY',
-  'width': 'screenSizeX*4/5 + 40',
+  'width': 'screenSizeX*3/4 + 40',
   'height': 'screenSizeY',
 });
 var mainLeft = mainHalf.dup({});
-var mainMid = mainFivth.dup({ 'x': 'screenOriginX+screenSizeX/5' });
+var mainMid = mainFivth.dup({ 'x': 'screenOriginX+screenSizeX/4' });
 var mainRight = mainHalf.dup({ 'x': 'screenOriginX+screenSizeX/2' });
 var mainLeftTop = mainFivth.dup({ 'height': 'screenSizeY/2' });
 var mainLeftBot = mainLeftTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
 var mainMidTop = mainMid.dup({ 'height': 'screenSizeY/2' });
 var mainMidBot = mainMidTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
-var mainRightTop = mainLeftTop.dup({ 'x': 'screenOriginX+screenSizeX*4/5' });
+var mainRightTop = mainLeftTop.dup({ 'x': 'screenOriginX+screenSizeX*3/4' });
 var mainRightBot = mainRightTop.dup({ 'y': 'screenOriginY+screenSizeY/2' });
 
 var brightness0 = S.op('shell', {
@@ -277,7 +278,7 @@ S.bnda({
   // Grid
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
-    gridOption.grids[monitorMain] = { width: 5, height: 4 };
+    gridOption.grids[monitorMain] = { width: 7, height: 5 };
 
     S.op('grid', gridOption).run();
   },
