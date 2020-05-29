@@ -52,7 +52,8 @@ User key binding
 ```json
 [
   { "keys": ["super+option+w"], "command": "close_workspace" },
-  { "keys": ["super+shift+w"], "command": "close_all" }
+  { "keys": ["super+shift+w"], "command": "close_all" },
+  { "keys": ["super+0"], "command": "reset_font_size" },
 ]
 ```
 
