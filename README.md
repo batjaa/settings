@@ -1,6 +1,8 @@
 # Batjaa's dotfiles
 
-To update, `cd` into your local `dotfiles` repository and then:
+1. Use Safari to add your SSH keys to github. Clone the repository. In macos terminal simply `bash` will do.
+
+1. To update, `cd` into your local `dotfiles` repository and then (remember to use bash):
 
 ```bash
 source bootstrap.sh
