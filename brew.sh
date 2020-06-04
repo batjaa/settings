@@ -6,7 +6,7 @@
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade --all
+brew upgrade
 
 # Save Homebrew’s installed location.
 BREW_PREFIX=$(brew --prefix)
@@ -59,6 +59,7 @@ brew install gh
 brew install imagemagick --with-webp
 brew install lua
 brew install nvm
+brew install yarn
 # brew install p7zip
 # brew install pigz
 # brew install pv
