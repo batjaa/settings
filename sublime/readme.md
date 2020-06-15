@@ -3,18 +3,19 @@ Sublime 3 configurations
 
 ### Install [Package Controller](https://packagecontrol.io/installation)
 
-1. Open console (View > Show Console)
-2. Copy and run the following code (Python snippet)
+1. Open the command palette
 
-   ```
-   import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
-   ```
+```
+Win/Linux: ctrl+shift+p, Mac: cmd+shift+p
+```
+
+1. Type Install Package Control, press enter
 
 ### Install the following plugins in no particular order
 
 * [Trailing Spaces](https://github.com/SublimeText/TrailingSpaces)
 * [JSHint](https://packagecontrol.io/packages/SublimeLinter-jshint)
-  * (Sublime Linter)[http://sublimelinter.readthedocs.org/en/latest/installation.html] is required
+  * [Sublime Linter](http://sublimelinter.readthedocs.org/en/latest/installation.html) is required
 * [JSCS](https://packagecontrol.io/packages/SublimeLinter-jscs)
 * [AutoFileName](https://packagecontrol.io/packages/AutoFileName)
 * [Afterglow](https://github.com/YabataDesign/afterglow-theme)

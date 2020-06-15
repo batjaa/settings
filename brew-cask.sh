@@ -45,6 +45,7 @@ brew cask install adobe-creative-cloud
 # brew cask install limechat
 # brew cask install miro-video-converter
 # brew cask install horndis               # usb tethering
+brew cask install steam
 
 # browsers
 brew cask install google-chrome
