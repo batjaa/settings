@@ -8,7 +8,8 @@ S.cfga({
 });
 
 // Monitors
-var monitorLaptop = '1920x1200';
+var monitorLaptop15 = '1920x1200';
+var monitorLaptop16 = '1792x1120';
 var monitorMain   = '2560x1440';
 
 // Operations
@@ -22,7 +23,7 @@ var leftHalf = full.dup({width: 'screenSizeX/2'});
 var rightHalf = leftHalf.dup({x: 'screenOriginX+screenSizeX/2'});
 
 var laptopFull = S.op('move', {
-  'screen': monitorLaptop,
+  'screen': monitorLaptop15,
   'x': 'screenOriginX',
   'y': 'screenOriginY',
   'width': 'screenSizeX',
@@ -170,8 +171,8 @@ function laptopSetup() {
 
 // Defaults
 // S.def(2, twoButOneMonitorLayout);
-S.def(['2560x1440'], mirroringSetup);
-S.def(['1920x1200'], laptopSetup);
+S.def([monitorMain], mirroringSetup);
+S.def([monitorLaptop15, monitorLaptop16], laptopSetup);
 
 var universalLayout = function() {
   // Should probably make sure the resolutions match but w/e
@@ -188,7 +189,7 @@ var universalLayout = function() {
 };
 
 // Batch bind everything. Less typing.
-S.bnda({
+S.bindAll({
   // Layout Bindings
   'padEnter:ctrl': universalLayout,
 
@@ -196,10 +197,23 @@ S.bnda({
   '1:alt':       S.op('focus', { 'app': 'Finder' }),
   '2:alt':       S.op('focus', { 'app': 'iTerm2' }),
   '3:alt':       S.op('focus', { 'app': 'Google Chrome' }),
+  '3:alt;shift': S.op('focus', { 'app': 'Firefox' }),
   '4:alt':       S.op('focus', { 'app': 'Sublime Text' }),
-  '4:alt;shift': S.op('focus', { 'app': 'PhpStorm' }),
+  '4:alt;shift': function() {
+    S.eachApp(function(app) {
+      if (['PhpStorm', 'WebStorm'].indexOf(app.name()) >= 0) {
+        app.mainWindow().focus();
+      }
+    });
+  },
   '4:alt;cmd':   S.op('focus', { 'app': 'Code' }),
-  '5:alt':       S.op('focus', { 'app': 'Slack' }),
+  '5:alt':       function() {
+    S.eachApp(function(app) {
+      if (['Slack', 'Amazon Chime'].indexOf(app.name()) >= 0) {
+        app.mainWindow().focus();
+      }
+    });
+  },
 
   // Basic Location Bindings
   // 'pad0:ctrl': lapChat,
@@ -271,7 +285,7 @@ S.bnda({
   'esc:cmd': S.op('hint'),
 
   // Switch currently doesn't work well so I'm commenting it out until I fix it.
-  //'tab:cmd': S.op('switch'),
+  // 'tab:cmd': S.op('switch'),
 
   'r:cmd;alt': S.op('relaunch'),
 
@@ -279,6 +293,8 @@ S.bnda({
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
     gridOption.grids[monitorMain] = { width: 7, height: 5 };
+    gridOption.grids[monitorLaptop16] = { width: 7, height: 5 };
+    gridOption.grids[monitorLaptop16] = { width: 7, height: 5 };
 
     S.op('grid', gridOption).run();
   },
