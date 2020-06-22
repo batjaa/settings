@@ -203,7 +203,3 @@
 [url "git://gist.github.com/"]
 
     insteadOf = "gist:"
-
-[user]
-    name = Batjaa Batbold
-    email = batjaa0615@gmail.com
