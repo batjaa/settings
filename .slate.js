@@ -201,7 +201,7 @@ S.bindAll({
   '4:alt':       S.op('focus', { 'app': 'Sublime Text' }),
   '4:alt;shift': function() {
     S.eachApp(function(app) {
-      if (['PhpStorm', 'WebStorm'].indexOf(app.name()) >= 0) {
+      if (['PhpStorm', 'WebStorm', 'IntelliJ IDEA'].indexOf(app.name()) >= 0) {
         app.mainWindow().focus();
       }
     });
