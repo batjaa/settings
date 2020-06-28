@@ -8,7 +8,7 @@ S.cfga({
 });
 
 // Monitors
-var monitorLaptop15 = '1920x1200';
+var monitorLaptop15 = '1680x1050';
 var monitorLaptop16 = '1792x1120';
 var monitorMain   = '2560x1440';
 
