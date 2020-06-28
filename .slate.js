@@ -293,7 +293,7 @@ S.bindAll({
   'esc:ctrl': function() {
     var gridOption = { grids: {} };
     gridOption.grids[monitorMain] = { width: 7, height: 5 };
-    gridOption.grids[monitorLaptop16] = { width: 7, height: 5 };
+    gridOption.grids[monitorLaptop15] = { width: 7, height: 5 };
     gridOption.grids[monitorLaptop16] = { width: 7, height: 5 };
 
     S.op('grid', gridOption).run();
