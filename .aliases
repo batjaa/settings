@@ -5,11 +5,16 @@ alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
 # Shortcuts
+alias reload="source ~/.bash_profile"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias p="cd ~/git"
 alias g="git"
 alias s="git status"
+alias x="clear && ls -la"
+alias ph="pushd ~ && clear"
+alias pd="pushd ~/Downloads && clear"
+alias pt="pushd /var/tmp/ && clear"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
