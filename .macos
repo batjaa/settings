@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Find defaults settings: https://pawelgrzybek.com/change-macos-user-preferences-via-command-line/
+# defaults read > before.defaults
+# defaults read > after.defaults
+# diff before.defaults after.defaults
+
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -128,6 +133,9 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Enable subpixel font rendering on non-Apple LCDs
 # Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
 defaults write NSGlobalDomain AppleFontSmoothing -int 1
+
+# Default clock format
+defaults write com.apple.menuextra.clock DateFormat -string "MMM d h:mm a"
 
 ###############################################################################
 # Finder                                                                      #
