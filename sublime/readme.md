@@ -19,6 +19,7 @@ Win/Linux: ctrl+shift+p, Mac: cmd+shift+p
 * [JSCS](https://packagecontrol.io/packages/SublimeLinter-jscs)
 * [AutoFileName](https://packagecontrol.io/packages/AutoFileName)
 * [Afterglow](https://github.com/YabataDesign/afterglow-theme)
+* [Markdown Extended](https://github.com/jonschlinkert/sublime-markdown-extended)
 * Git
 * GitGutter
 * Alignment
@@ -32,11 +33,12 @@ Win/Linux: ctrl+shift+p, Mac: cmd+shift+p
 * Copy [default.sublime-snippet](https://github.com/batjaa/settings/blob/master/sublime/default.sublime-snippet) into `Packages->User`
   *Hint: Preferences -> Browser Packages*
 
-### Settings
+## Settings
 
-User settings
+### User settings
 
 ```json
+"font_size": 13,
 // The number of spaces a tab is considered equal to
 "tab_size": 2,
 // Set to true to insert spaces when tab is pressed
@@ -48,7 +50,7 @@ User settings
 "tabs_small": true,
 ```
 
-User key binding
+### User key binding
 
 ```json
 [
@@ -56,6 +58,19 @@ User key binding
   { "keys": ["super+shift+w"], "command": "close_all" },
   { "keys": ["super+0"], "command": "reset_font_size" },
 ]
+```
+
+### User Syntax Specific settings
+
+First, open a markdown(.md) file, then navigate to Sublime Text -> Preferences -> Settings - More -> Syntax Specific - User in the menu bar.
+
+```json
+"color_scheme": "Packages/Theme - Afterglow/Afterglow-markdown.tmTheme",
+"draw_centered": true,
+"draw_indent_guides": false,
+"trim_trailing_white_space_on_save": false,
+"word_wrap": true,
+"wrap_width": 80  // Sets the # of characters per line
 ```
 
 ### Quartzy
