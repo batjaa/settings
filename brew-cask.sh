@@ -61,7 +61,8 @@ brew cask install tor-browser
 brew cask install vlc
 # brew cask install gpgtools
 # brew cask install licecap
-brew cask install utorrent
-brew cask info daisydisk
+# brew cask install utorrent
+brew cask install garmin-express
+brew cask install daisydisk
 
 
