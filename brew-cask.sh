@@ -24,6 +24,7 @@ brew cask install 1password
 brew cask install iterm2
 brew cask install p4v
 brew cask install sublime-text
+brew cask install visual-studio-code
 brew cask install dash
 brew cask install postman
 brew cask install jetbrains-toolbox
