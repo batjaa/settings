@@ -209,7 +209,7 @@ S.bindAll({
   '4:alt;cmd':   S.op('focus', { 'app': 'Code' }),
   '5:alt':       function() {
     S.eachApp(function(app) {
-      if (['Slack', 'Amazon Chime'].indexOf(app.name()) >= 0) {
+      if (['Slack'].indexOf(app.name()) >= 0) {
         app.mainWindow().focus();
       }
     });
