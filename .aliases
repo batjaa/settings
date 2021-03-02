@@ -15,6 +15,7 @@ alias x="clear && ls -la"
 alias ph="pushd ~ && clear"
 alias pd="pushd ~/Downloads && clear"
 alias pt="pushd /var/tmp/ && clear"
+alias airpod="blueutil --connect fc-1d-43-e4-7e-54"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`

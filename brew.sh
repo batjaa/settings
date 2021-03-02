@@ -65,6 +65,7 @@ brew install yarn
 brew install rename
 brew install tree
 brew install vbindiff
+brew install blueutil
 # brew install zopfli
 
 # Remove outdated versions from the cellar.
