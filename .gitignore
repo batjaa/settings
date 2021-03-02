@@ -13,3 +13,8 @@ Icon
 # Vscode Files
 # --------------------
 /*.code-*
+
+# --------------------
+# Sublime Files
+# --------------------
+/*.sublime-workspace
