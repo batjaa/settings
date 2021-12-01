@@ -1,0 +1,41 @@
+# Git credentials
+GIT_AUTHOR_NAME="Batjaa Batbold"
+GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
+git config --global user.name "$GIT_AUTHOR_NAME"
+GIT_AUTHOR_EMAIL="batbob@amazon.comm"
+GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+git config --global user.email "$GIT_AUTHOR_EMAIL"
+
+export PATH="$HOME/.toolbox/bin:$PATH";
+
+alias cloud-desk="ssh batbob@batbob-clouddesk.aka.corp.amazon.com"
+alias bb="brazil-build"
+alias bbb="brazil-build build"
+alias bbrb="brazil-recursive-cmd --allPackages brazil-build"
+alias bbs="brazil-build server"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+alias mix-login="aws goshawk get-login --profile mix --package-manager npm --domain-name amazon --repository-name shared --execute"
+
+# login for JFrog read only
+alias mix-jfrog-login-ro="npm config set registry http://repo.cards.a2z.com/artifactory/api/npm/npm/ && npm config set always-auth false"
+# login for JFrog read & publishing
+alias mix-jfrog-login="npm config set registry http://repo.cards.a2z.com/artifactory/api/npm/npm/ && npm config set always-auth false && npm login"
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+export JAVA_6_HOME=/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+export JAVA_8_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-8.jdk/Contents/Home
+export JAVA_11_HOME=/usr/local/Cellar/openjdk@11/11.0.10/
+
+alias java6='export JAVA_HOME=$JAVA_6_HOME'
+alias java8='export JAVA_HOME=$JAVA_8_HOME'
+alias java11='export JAVA_HOME=$JAVA_11_HOME'
+
+# default to Java 11
+java11

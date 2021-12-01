@@ -1,7 +1,11 @@
 [alias]
+    # For more inspiration checkout later:
+    # https://www.atlassian.com/blog/git/advanced-git-aliases
+    # https://gist.github.com/johnpolacek/69604a1f6861129ef088
 
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit
+    lm = log --pretty=oneline --graph --abbrev-commit
 
     # View the current working tree status using the short format
     s = status -s
@@ -53,11 +57,14 @@
     # Amend the currently staged files to the latest commit
     amend = commit --amend --reuse-message=HEAD
 
+    # Amend the all changed files to the latest commit
+    aamend = commit -a --amend --reuse-message=HEAD
+
     # Credit an author on the latest commit
     # credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
 
     # Interactive rebase with the given number of latest commits
-    # reb = "!r() { git rebase -i HEAD~$1; }; r"
+    reb = "!r() { git rebase -i HEAD~$1; }; r"
 
     # Remove the old tag with this name and tag the latest commit with it.
     # retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"

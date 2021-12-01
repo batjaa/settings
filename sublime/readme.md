@@ -106,6 +106,9 @@ First, open a markdown(.md) file, then navigate to Sublime Text -> Preferences -
   { "keys": ["f10"], "command": "find_use" },
   { "keys": ["f8"], "command": "import_namespace" },
   { "keys": ["shift+f12"], "command": "goto_definition_scope" },
+
+  // General
+  { "keys": ["super+b"], "command": "goto_definition" },
 ]
 ```
 
