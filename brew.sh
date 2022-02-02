@@ -55,6 +55,7 @@ brew install composer
 brew install git
 brew install git-lfs
 brew install gh
+brew install jq
 brew install imagemagick --with-webp
 brew install lua
 brew install nvm
