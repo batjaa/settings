@@ -32,14 +32,12 @@ if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
   chsh -s "${BREW_PREFIX}/bin/bash";
 fi;
 
-brew install wget
-
 # Install more recent versions of some macOS tools.
 brew install vim --with-override-system-vi
 brew install grep
 # brew install openssh
 brew install screen
-# brew install php
+
 
 # Install font tools.
 brew tap bramstein/webfonttools
@@ -48,17 +46,15 @@ brew install sfnt2woff-zopfli
 brew install woff2
 
 # Install other useful binaries.
+brew install wget
 brew install ack
 brew install brightness
-# brew install composer
 brew install git
 brew install git-lfs
 brew install gh
 brew install jq
 brew install imagemagick --with-webp
 brew install lua
-brew install nvm
-# brew install yarn
 brew install asdf
 # brew install p7zip
 # brew install pigz
@@ -79,17 +75,17 @@ brew cleanup
 # Install native apps
 
 # daily
-brew install slate
+# brew install slate # discontinued
 brew install bettertouchtool
-# brew install karabiner
-# brew install dropbox
 brew install slack
 brew install rescuetime
+brew install toggl-track
 brew install alfred
 brew install spotify
-brew install google-backup-and-sync
-# brew install discord
+brew install google-drive
 brew install 1password
+brew install obsidian
+brew install gifox
 
 # dev
 brew install iterm2
@@ -97,12 +93,22 @@ brew install p4v
 brew install sublime-text
 brew install visual-studio-code
 brew install dash
-# brew install postman
-# brew install jetbrains-toolbox
 brew install trailer
+# brew install postman
+brew install jetbrains-toolbox
+
+# js
+brew install nvm
+# brew install yarn
+
+# lamp-like stack
+# brew install php
+# brew install composer
 # brew install sequel-pro
 
+
 # communication
+brew install discord
 # brew install whatsapp
 # brew install viber
 # brew install telegram
@@ -120,7 +126,7 @@ brew install trailer
 # brew install steam
 
 # browsers
-# brew install google-chrome
+brew install google-chrome
 # brew install google-chrome-canary
 # brew install homebrew/cask-versions/firefox-developer-edition
 # brew install webkit-nightly
@@ -128,9 +134,8 @@ brew install trailer
 # brew install tor-browser
 
 # less often
-# brew install disk-inventory-x
 # brew install screenflow4 # 4 specifically not 5.
-# brew install vlc
+brew install vlc
 # brew install gpgtools
 # brew install licecap
 # brew install utorrent
