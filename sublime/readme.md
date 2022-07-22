@@ -28,7 +28,6 @@ Win/Linux: ctrl+shift+p, Mac: cmd+shift+p
 * [URLEncode](https://packagecontrol.io/packages/URLEncode)
 * [SublimeLinter](http://sublimelinter.readthedocs.org/en/latest/installation.html)
 * [CSSComb](https://github.com/csscomb/sublime-csscomb)
-* [SublimeLinter](http://sublimelinter.readthedocs.org/en/latest/installation.html)
 
 ### Set up default snippets
 
