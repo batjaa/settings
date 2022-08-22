@@ -1,5 +1,7 @@
 # Batjaa's dotfiles
 
+## Shell setup
+
 1. Use Safari to add your SSH keys to github. Clone the repository. In macos terminal simply `bash` will do.
 
 2. To update, `cd` into your local `dotfiles` repository and then (remember to use bash):
@@ -33,11 +35,29 @@ GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 git config --global user.email "$GIT_AUTHOR_EMAIL"
 ```
 
-7. Get [Homebrew](https://brew.sh) and run `./brew.sh`
+## MacOS setup
 
-7. `./brew-cask.sh`
+1. Get [Homebrew](https://brew.sh) and run `./brew.sh`
 
-7. When setting up a new Mac, you may want to set defaults and startup items: `./.macos`
+2. `./brew-cask.sh`
+
+3. Set defaults: `./.macos`
+
+4. Configure [Hammerspoon](http://www.hammerspoon.org)
+
+  1. Install Hammerspoon
+
+  ```
+  brew install hammerspoon
+  ```
+
+  2. Install [SpoonInstall](https://www.hammerspoon.org/Spoons/SpoonInstall.html)
+
+  3. Coppy config
+
+  ```
+  cp .hammerspoon/init.lua ~/.hammerspoon/init.lua
+  ```
 
 ## Thanks to…
 

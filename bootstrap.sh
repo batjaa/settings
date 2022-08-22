@@ -13,6 +13,7 @@ function doIt() {
         --exclude "karabiner" \
         --exclude "sublime" \
         --exclude "brew*" \
+        --exclude ".hammerspoon" \
         --exclude "settings.sublime-*" \
         -avh --no-perms . ~;
     source ~/.bash_profile;
