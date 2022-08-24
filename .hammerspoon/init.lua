@@ -106,11 +106,12 @@ Install:andUse("AppLauncher",
   {
     config = { modifiers = option },
     hotkeys = {
+      ["`"] = "Spotify",
       ["1"] = "Finder",
       ["2"] = "iTerm",
       ["3"] = "Google Chrome",
       ["4"] = "Sublime Text",
-      ["5"] = "Code",
+      ["5"] = "Slack",
     }
   }
 )
