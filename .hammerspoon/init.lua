@@ -106,7 +106,7 @@ Install:andUse("AppLauncher",
   {
     config = { modifiers = option },
     hotkeys = {
-      ["`"] = "Spotify",
+      ["escape"] = "Spotify",
       ["1"] = "Finder",
       ["2"] = "iTerm",
       ["3"] = "Google Chrome",
