@@ -94,6 +94,7 @@ brew install sublime-text
 brew install visual-studio-code
 brew install dash
 brew install trailer
+brew install hammerspoon
 # brew install postman
 brew install jetbrains-toolbox
 
