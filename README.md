@@ -53,7 +53,11 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
 
   2. Install [SpoonInstall](https://www.hammerspoon.org/Spoons/SpoonInstall.html)
 
-  3. Coppy config
+  ```
+  unzip ~/Downloads/SpoonInstall.spoon.zip -d ~/.hammerspoon/Spoons/
+  ```
+
+  3. Copy config
 
   ```
   cp .hammerspoon/init.lua ~/.hammerspoon/init.lua
