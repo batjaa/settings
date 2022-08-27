@@ -93,7 +93,9 @@ brew install iterm2
 brew install p4v
 brew install sublime-text
 brew install visual-studio-code
-brew install dash
+brew install --cask dash
+brew install --cask docker
+brew install docker-compose
 brew install trailer
 brew install hammerspoon
 # brew install postman
