@@ -86,6 +86,7 @@ brew install google-drive
 brew install 1password
 brew install obsidian
 brew install gifox
+brew install htop
 
 # dev
 brew install iterm2
