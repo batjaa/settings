@@ -37,7 +37,7 @@ brew install vim --with-override-system-vi
 brew install grep
 # brew install openssh
 brew install screen
-
+brew install tmux
 
 # Install font tools.
 brew tap bramstein/webfonttools
