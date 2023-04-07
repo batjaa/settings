@@ -49,5 +49,5 @@ export NVM_DIR="$HOME/.nvm"
 . /opt/homebrew/opt/nvm/etc/bash_completion.d/nvm # This loads nvm bash_completion
 
 # Add asdfg
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
+#echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
+#echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
