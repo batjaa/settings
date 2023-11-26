@@ -40,15 +40,15 @@ brew install screen
 brew install tmux
 
 # Install font tools.
-brew tap bramstein/webfonttools
-brew install sfnt2woff
-brew install sfnt2woff-zopfli
-brew install woff2
+# brew tap bramstein/webfonttools
+# brew install sfnt2woff
+# brew install sfnt2woff-zopfli
+# brew install woff2
 
 # Install other useful binaries.
 brew install wget
 brew install ack
-brew install brightness
+# brew install brightness
 brew install git
 brew install git-lfs
 brew install gh
@@ -59,7 +59,7 @@ brew install asdf
 # brew install p7zip
 # brew install pigz
 # brew install pv
-brew install rename
+# brew install rename
 brew install tree
 brew install vbindiff
 brew install blueutil
@@ -78,7 +78,7 @@ brew cleanup
 # brew install slate # discontinued
 brew install bettertouchtool
 brew install slack
-brew install rescuetime
+# brew install rescuetime
 brew install toggl-track
 brew install alfred
 brew install spotify
@@ -93,13 +93,13 @@ brew install iterm2
 brew install p4v
 brew install sublime-text
 brew install visual-studio-code
-brew install --cask dash
+brew install dash
 brew install --cask docker
-brew install docker-compose
 brew install trailer
 brew install hammerspoon
-# brew install postman
+brew install postman
 brew install jetbrains-toolbox
+brew install direnv
 
 # js
 brew install nvm
@@ -115,7 +115,7 @@ brew install nvm
 brew install discord
 # brew install whatsapp
 # brew install viber
-# brew install telegram
+brew install telegram
 
 # creativity
 # brew install adobe-creative-cloud
@@ -127,7 +127,7 @@ brew install discord
 # brew install limechat
 # brew install miro-video-converter
 # brew install horndis               # usb tethering
-# brew install steam
+brew install steam
 
 # browsers
 brew install google-chrome

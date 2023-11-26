@@ -63,6 +63,17 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
   cp .hammerspoon/init.lua ~/.hammerspoon/init.lua
   ```
 
+## Google drive
+
+- Sign ing
+- Configure
+
+## Alfred setup
+
+- Apply license
+- Update hotkey
+- Enable clipboard history
+
 ## Thanks to…
 
 * [Ben Bernard](http://blog.benjaminbernard.com/) and his [homedir repository](https://github.com/benbernard/HomeDir)

@@ -66,8 +66,17 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # Disable auto-correct
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
-# Disable spotlight
+# Disable default shortcuts
 /usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:64:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:65:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:118:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:175:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:190:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:222:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:32:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:33:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:36:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:52:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
@@ -100,6 +109,9 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 13
 # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
 # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
 defaults write NSGlobalDomain AppleLanguages -array "en" "mn"
+
+# Use Fx keys default to function keys
+defaults write NSGlobalDomain "com.apple.keyboard.fnState" -int 1
 
 # Show language menu in the top right corner of the boot screen
 sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bool true
@@ -251,6 +263,9 @@ defaults write com.apple.dock autohide-time-modifier -float 0
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
+# Disable hot corners
+defaults write com.apple.dock wvous-br-corner -int 1
+
 ###############################################################################
 # Safari & WebKit                                                             #
 ###############################################################################
@@ -366,18 +381,17 @@ defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
 
 ###############################################################################
-# Slate.app                                                                   #
+# Startup items                                                               #
 ###############################################################################
-
-defaults write com.slate.Slate SUEnableAutomaticChecks -int 1
+defaults write com.runningwithcrayons.Alfred-Preferences syncfolder -string "~/My Drive/Apps/Alfred"
 
 ###############################################################################
 # Startup items                                                               #
 ###############################################################################
 
-osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Slate.app", hidden:false}'
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Hammerspoon.app", hidden:false}'
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Alfred.app", hidden:false}'
-osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Backup and Sync.app", hidden:false}'
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Google Drive.app", hidden:false}'
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Spotify.app", hidden:false}'
 osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/BetterTouchTool.app", hidden:false}'
 
