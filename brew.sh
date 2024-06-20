@@ -75,16 +75,16 @@ brew cleanup
 # Install native apps
 
 # daily
-# brew install slate # discontinued
+brew install alfred
+brew install 1password
+brew install hammerspoon
+brew install obsidian
 brew install bettertouchtool
 brew install slack
 # brew install rescuetime
-brew install toggl-track
-brew install alfred
+# brew install toggl-track
 brew install spotify
 brew install google-drive
-brew install 1password
-brew install obsidian
 brew install gifox
 brew install htop
 
@@ -96,7 +96,6 @@ brew install visual-studio-code
 brew install dash
 brew install --cask docker
 brew install trailer
-brew install hammerspoon
 brew install postman
 brew install jetbrains-toolbox
 brew install direnv
@@ -136,9 +135,9 @@ brew install google-chrome
 # brew install webkit-nightly
 # brew install chromium
 # brew install tor-browser
+brew install --cask brave-browser
 
 # less often
-# brew install screenflow4 # 4 specifically not 5.
 brew install vlc
 # brew install gpgtools
 # brew install licecap

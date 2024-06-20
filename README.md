@@ -37,9 +37,7 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
 
 ## MacOS setup
 
-1. Get [Homebrew](https://brew.sh) and run `./brew.sh`
-
-2. `./brew-cask.sh`
+1. Get [Homebrew](https://brew.sh) and then run `./brew.sh`
 
 3. Set defaults: `./.macos`
 
