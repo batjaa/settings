@@ -29,6 +29,4 @@ else
     fi;
 fi;
 
-ln -f .slate.js ~/.slate.js
-
 unset doIt;
