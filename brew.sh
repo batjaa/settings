@@ -81,6 +81,7 @@ brew install hammerspoon
 brew install obsidian
 brew install bettertouchtool
 brew install slack
+brew install bartender
 # brew install rescuetime
 # brew install toggl-track
 brew install spotify
