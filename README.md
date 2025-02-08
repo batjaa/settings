@@ -70,7 +70,7 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
 
 - Apply license
 - Update hotkey
-- Enable clipboard history
+- Enable clipboard history - change hotkey to cmd shift c
 
 ## Thanks to…
 
