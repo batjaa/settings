@@ -95,7 +95,7 @@ brew install p4v
 brew install sublime-text
 brew install visual-studio-code
 brew install dash
-brew install --cask docker
+brew install orbstack
 brew install trailer
 brew install postman
 brew install jetbrains-toolbox
