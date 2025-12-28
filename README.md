@@ -4,6 +4,15 @@
 
 1. Use Safari to add your SSH keys to github. Clone the repository. In macos terminal simply `bash` will do.
 
+```bash
+# generate ssh key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# copy public key to clipboard
+pbcopy < ~/.ssh/id_ed25519.pub
+
+```
+
 2. To update, `cd` into your local `dotfiles` repository and then (remember to use bash):
 
 ```bash
@@ -63,14 +72,14 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
 
 ## Google drive
 
-- Sign ing
-- Configure
+- Sign in
+- Configure to mirror files instead of streaming
 
 ## Alfred setup
 
 - Apply license
 - Update hotkey
-- Enable clipboard history - change hotkey to cmd shift c
+- Enable clipboard history - change hotkey to cmd+shift+c
 
 ## Thanks to…
 
