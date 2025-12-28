@@ -33,7 +33,7 @@ if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
 fi;
 
 # Install more recent versions of some macOS tools.
-brew install vim --with-override-system-vi
+brew install vim
 brew install grep
 # brew install openssh
 brew install screen
@@ -53,7 +53,7 @@ brew install git
 brew install git-lfs
 brew install gh
 brew install jq
-brew install imagemagick --with-webp
+brew install imagemagick
 brew install lua
 brew install asdf
 # brew install p7zip
@@ -79,7 +79,7 @@ brew install alfred
 brew install 1password
 brew install hammerspoon
 brew install obsidian
-brew install bettertouchtool
+# brew install bettertouchtool
 brew install slack
 brew install bartender
 # brew install rescuetime
@@ -88,6 +88,7 @@ brew install spotify
 brew install google-drive
 brew install gifox
 brew install htop
+brew install zoom
 
 # dev
 brew install iterm2
@@ -101,6 +102,10 @@ brew install postman
 brew install jetbrains-toolbox
 brew install direnv
 
+# trading
+brew install thinkorswim
+brew install tradingview
+
 # js
 brew install nvm
 # brew install yarn
@@ -113,12 +118,12 @@ brew install nvm
 
 # communication
 brew install discord
-# brew install whatsapp
+brew install whatsapp
 # brew install viber
 brew install telegram
 
 # creativity
-# brew install adobe-creative-cloud
+brew install --cask adobe-creative-cloud
 
 # brew install imagealpha
 # brew install imageoptim
