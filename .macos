@@ -67,16 +67,48 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Disable default shortcuts
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:64:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:65:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:118:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:175:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:190:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:222:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:32:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:33:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:36:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
-/usr/libexec/PlistBuddy -c "Set AppleSymbolicHotKeys:52:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.118.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.15.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.16.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.164.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.17.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.175.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.18.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.184.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.19.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.190.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.20.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.21.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.22.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.222.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.23.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.24.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.25.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.26.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.28.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.29.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.30.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.31.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.32.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.33.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.36.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.52.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.60.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.64.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.65.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 61 "{
+    enabled = 1;
+    value = {
+        type = standard;
+        parameters = (32, 49, 1572864);
+    };
+}"
+plutil -replace AppleSymbolicHotKeys.79.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.80.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.81.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+plutil -replace AppleSymbolicHotKeys.82.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+
 
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
@@ -109,6 +141,12 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 13
 # Note: if you’re in the US, replace `EUR` with `USD`, `Centimeters` with
 # `Inches`, `en_GB` with `en_US`, and `true` with `false`.
 defaults write NSGlobalDomain AppleLanguages -array "en" "mn"
+
+# Add MN-Cyrilic keyboard layout
+defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>-2276</integer><key>KeyboardLayout Name</key><string>Mongolian-Cyrillic</string></dict>'
+
+# Disable Globe key showing emojis
+defaults write com.apple.HIToolbox AppleFnUsageType -int 0
 
 # Use Fx keys default to function keys
 defaults write NSGlobalDomain "com.apple.keyboard.fnState" -int 1
