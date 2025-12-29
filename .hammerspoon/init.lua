@@ -1,15 +1,33 @@
+-- Hammerspoon Configuration
+-- Compatible with macOS Sequoia/Tahoe
+-- Keybindings designed to avoid conflicts with macOS defaults
+-- Make sure to run .macos script to disable conflicting system shortcuts
+
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall.use_syncinstall = true
 Install=spoon.SpoonInstall
 Install.use_syncinstall = true
 
--- Common
+-- Common modifiers
+-- Using Ctrl+Alt+Cmd combination to avoid conflicts with most macOS shortcuts
+hyper = { "cmd", "alt", "ctrl", "shift" }  -- Used for system options menu
+super = { "cmd", "alt", "ctrl" }           -- Used for window management
+ctrl = { "ctrl" }                          -- Used for grid
+option = { "alt" }                         -- Used for app launching
+optionShift = { "alt", "shift" }           -- Used for app launching
 
-hyper = { "cmd", "alt", "ctrl", "shift" }
-ctrl = { "ctrl" }
-option = { "alt" }
+-- Performance settings
 hs.window.animationDuration = 0;
 hs.application.enableSpotlightForNameSearches(true)
+
+-- Function to check if hotkey might conflict with system shortcuts
+function checkHotkeyConflict(mods, key)
+  local systemAssigned = hs.hotkey.systemAssigned(mods, key)
+  if systemAssigned then
+    hs.alert.show(string.format("Warning: %s + %s conflicts with system shortcut", 
+      table.concat(mods, "+"), key))
+  end
+end
 
 -- screens
 local screens = hs.screen.allScreens()
@@ -36,13 +54,17 @@ function getAppId(app)
   return hs.application.infoForBundlePath(string.format('/Applications/%s.app', app))['CFBundleIdentifier']
 end
 
--- Reload
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "R", function()
+-- Reload Hammerspoon Configuration
+-- Using Ctrl+Alt+Cmd+R (safe, no known conflicts)
+hs.hotkey.bind(super, "R", function()
+  hs.alert.show("Reloading Hammerspoon...")
   hs.reload()
 end)
-hs.alert.show("Config loaded")
+hs.alert.show("Hammerspoon Config loaded")
 
--- Cofigure grid
+-- Window Grid for manual positioning
+-- Using Ctrl+Escape (safe, no known system conflicts)
+-- This allows you to manually position windows on a grid
 Install:andUse("WindowGrid",
   {
     config = { gridGeometries = { { "4x3" } } },
@@ -51,6 +73,13 @@ Install:andUse("WindowGrid",
   }
 )
 
+-- Window Management with ShiftIt
+-- Using Ctrl+Alt+Cmd (super) modifier to avoid conflicts
+-- macOS Mission Control shortcuts (disabled in .macos script):
+--   Ctrl+Up: Mission Control
+--   Ctrl+Down: Application Windows
+--   Ctrl+Left/Right: Move between Spaces
+-- Our shortcuts use Ctrl+Alt+Cmd which is rarely used by system
 Install.repos.ShiftIt = {
   url = "https://github.com/peterklijn/hammerspoon-shiftit",
   desc = "ShiftIt spoon repository",
@@ -60,22 +89,22 @@ Install:andUse("ShiftIt",
   {
     repo = "ShiftIt",
     hotkeys = {
-      left = {{ 'ctrl', 'alt', 'cmd' }, 'left' },
-      right = {{ 'ctrl', 'alt', 'cmd' }, 'right' },
-      up = {{ 'ctrl', 'alt', 'cmd' }, '5' },
-      down = {{ 'ctrl', 'alt', 'cmd' }, '6' },
-      upleft = {{ 'ctrl', 'alt', 'cmd' }, '1' },
-      upright = {{ 'ctrl', 'alt', 'cmd' }, '2' },
-      botleft = {{ 'ctrl', 'alt', 'cmd' }, '3' },
-      botright = {{ 'ctrl', 'alt', 'cmd' }, '4' },
-      maximum = {{ 'ctrl', 'alt', 'cmd' }, 'up' },
-      toggleFullScreen = {{ 'ctrl', 'alt', 'cmd' }, 'f' },
-      toggleZoom = {{ 'ctrl', 'alt', 'cmd' }, 'z' },
-      center = {{ 'ctrl', 'alt', 'cmd' }, 'c' },
-      nextScreen = {{ 'ctrl', 'alt', 'cmd' }, 'n' },
-      previousScreen = {{ 'ctrl', 'alt', 'cmd' }, 'p' },
-      resizeOut = {{ 'ctrl', 'alt', 'cmd' }, '=' },
-      resizeIn = {{ 'ctrl', 'alt', 'cmd' }, '-' }
+      left = {super, 'left' },       -- Move window to left half
+      right = {super, 'right' },     -- Move window to right half
+      up = {super, '5' },            -- Move window to top half
+      down = {super, '6' },          -- Move window to bottom half
+      upleft = {super, '1' },        -- Move window to top-left quarter
+      upright = {super, '2' },       -- Move window to top-right quarter
+      botleft = {super, '3' },       -- Move window to bottom-left quarter
+      botright = {super, '4' },      -- Move window to bottom-right quarter
+      maximum = {super, 'up' },      -- Maximize window
+      toggleFullScreen = {super, 'f' },  -- Toggle fullscreen
+      toggleZoom = {super, 'z' },    -- Zoom window
+      center = {super, 'c' },        -- Center window
+      nextScreen = {super, 'n' },    -- Move to next screen
+      previousScreen = {super, 'p' }, -- Move to previous screen
+      resizeOut = {super, '=' },     -- Increase window size
+      resizeIn = {super, '-' }       -- Decrease window size
     }
   }
 )
@@ -101,42 +130,81 @@ Install:andUse("ShiftIt",
 -- fnutils.each(fullApps, function(app) layout2[app] = {1, gobig} end)
 -- local layout2fn = applyLayout(layout2)
 
--- launch and focus applications
+-- Quick App Launcher
+-- Using Option (Alt) + Number for quick app access
+-- Potential conflicts (disabled in .macos):
+--   Option+Cmd+D: Show/Hide Dock
+-- Note: Option+numbers are generally safe from system conflicts
 Install:andUse("AppLauncher",
   {
     config = { modifiers = option },
     hotkeys = {
-      ["escape"] = "Spotify",
-      ["1"] = "Finder",
-      ["2"] = "iTerm",
-      ["3"] = "Google Chrome",
-      ["4"] = "Sublime Text",
-      ["5"] = "Slack",
+      ["escape"] = "Spotify",      -- Option+Esc: Spotify
+      ["1"] = "Finder",             -- Option+1: Finder
+      ["2"] = "iTerm",              -- Option+2: iTerm
+      ["3"] = "Google Chrome",      -- Option+3: Chrome
+      ["4"] = "Sublime Text",       -- Option+4: Sublime Text (or "Cursor")
+      ["5"] = "Slack",              -- Option+5: Slack
+      ["6"] = "TablePlus",          -- Option+6: Database tool (if installed)
+    }
+  }
+)
+Install:andUse("AppLauncher",
+  {
+    config = { modifiers = optionShift },
+    hotkeys = {
+      ["2"] = "TradingView",
+      ["3"] = "Discord",
     }
   }
 )
 
--- Random hammerspoon/system options to view
+-- System Options Menu (Hyper+O = Cmd+Alt+Ctrl+Shift+O)
+-- Using Hyper key to avoid any potential conflicts
+-- This is a safe combination as it requires all 4 modifiers
 hs.hotkey.bind(hyper, 'o', nil, function()
   local actions = {
-    lock = function()
-      hs.osascript.applescriptFromFile 'lockScreen.applescript'
+    ['Lock Screen'] = function()
+      hs.caffeinate.lockScreen()
     end,
-    sleep = function()
-      os.execute 'pmset sleepnow'
+    ['Sleep'] = function()
+      hs.caffeinate.systemSleep()
     end,
-    ['Show current app name'] = function()
-      hs.alert.show(hs.application.frontmostApplication():name(), nil, hs.screen.primaryScreen())
+    ['Show Current App'] = function()
+      local app = hs.application.frontmostApplication()
+      hs.alert.show(string.format("%s\nBundle ID: %s", 
+        app:name(), app:bundleID()), nil, hs.screen.primaryScreen())
     end,
-    ['mouse buttons'] = function()
-      tprint(hs.mouse.getButtons())
+    ['Show Displays'] = function()
+      local screens = hs.screen.allScreens()
+      for i, screen in ipairs(screens) do
+        print(string.format("Display %d: %s (%dx%d)", 
+          i, screen:name(), screen:frame().w, screen:frame().h))
+      end
+      hs.alert.show(string.format("%d display(s) connected", #screens))
     end,
-    ['px to em'] = function(s)
-      tprint(s)
-      hs.alert.show 'testing'
+    ['Check Hotkey Conflicts'] = function()
+      -- Check common Hammerspoon hotkeys for conflicts
+      local hotkeys = {
+        {super, "left", "Window Left"},
+        {super, "right", "Window Right"},
+        {option, "1", "Launch Finder"},
+        {ctrl, "escape", "Show Grid"},
+      }
+      for _, hk in ipairs(hotkeys) do
+        local result = hs.hotkey.systemAssigned(hk[1], hk[2])
+        if result then
+          print(string.format("⚠️  %s (%s+%s) conflicts with system", 
+            hk[3], table.concat(hk[1], "+"), hk[2]))
+        else
+          print(string.format("✓ %s (%s+%s) is safe", 
+            hk[3], table.concat(hk[1], "+"), hk[2]))
+        end
+      end
+      hs.alert.show("Conflict check complete (see console)")
     end,
-    ['Show current applications'] = function()
-      tprint(hs.application.runningApplications())
+    ['Reload Hammerspoon'] = function()
+      hs.reload()
     end,
   }
 
@@ -150,4 +218,58 @@ hs.hotkey.bind(hyper, 'o', nil, function()
   end)
   chooser:choices(options)
   chooser:show()
+end)
+
+-- Caffeine replacement - Keep Mac awake while working
+-- Useful during stock trading or long dev sessions
+local caffeine = hs.menubar.new()
+local function setCaffeineDisplay(state)
+  if state then
+    caffeine:setTitle("☕")
+    caffeine:setTooltip("Awake - Click to sleep")
+  else
+    caffeine:setTitle("💤")
+    caffeine:setTooltip("Sleepy - Click to stay awake")
+  end
+end
+
+local function caffeineClicked()
+  setCaffeineDisplay(hs.caffeinate.toggle("displayIdle"))
+end
+
+if caffeine then
+  caffeine:setClickCallback(caffeineClicked)
+  setCaffeineDisplay(hs.caffeinate.get("displayIdle"))
+end
+
+-- Auto-reload config when files change
+function reloadConfig(files)
+  local doReload = false
+  for _, file in pairs(files) do
+    if file:sub(-4) == ".lua" then
+      doReload = true
+    end
+  end
+  if doReload then
+    hs.reload()
+  end
+end
+local myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+hs.alert.show("Hammerspoon config loaded - auto-reload enabled")
+
+-- Quick system info display (useful for monitoring during heavy dev/trading)
+-- Press Cmd+Alt+Ctrl+I to see system stats
+hs.hotkey.bind(super, "i", function()
+  local battery = hs.battery.percentage()
+  local powerSource = hs.battery.powerSource()
+  local cpuUsage = hs.host.cpuUsage()
+  
+  local info = string.format(
+    "Battery: %d%% (%s)\nCPU Usage: %f%%",
+    battery,
+    powerSource,
+    cpuUsage.overall.active
+  )
+  
+  hs.alert.show(info, 5)
 end)

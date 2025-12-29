@@ -95,12 +95,14 @@ brew install iterm2
 brew install p4v
 brew install sublime-text
 brew install visual-studio-code
-brew install dash
+# brew install dash
 brew install orbstack
-brew install trailer
 brew install postman
 brew install jetbrains-toolbox
 brew install direnv
+brew install cursor
+brew install claude-code
+brew install gemini-cli
 
 # trading
 brew install thinkorswim

@@ -5,6 +5,9 @@
 # defaults read > after.defaults
 # diff before.defaults after.defaults
 
+# Compatible with macOS Sequoia (15.x) and Tahoe (16.x)
+# Last updated: December 2025
+
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
@@ -66,8 +69,26 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # Disable auto-correct
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
-# Disable default shortcuts
-plutil -replace AppleSymbolicHotKeys.118.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+# Disable inline predictive text (annoying for coding)
+defaults write NSGlobalDomain NSAutomaticInlinePredictionEnabled -bool false
+
+# Disable default shortcuts to avoid conflicts with Hammerspoon and coding
+# This disables Mission Control, Spaces, and other keyboard shortcuts
+# that might conflict with custom window management (Ctrl+Alt+Cmd combinations)
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 118 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 18, 262144);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 119 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 18, 262144);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.15.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.16.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.164.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
@@ -76,21 +97,103 @@ plutil -replace AppleSymbolicHotKeys.175.enabled -bool NO ~/Library/Preferences/
 plutil -replace AppleSymbolicHotKeys.18.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.184.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.19.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
-plutil -replace AppleSymbolicHotKeys.190.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 190 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (113, 12, 8388608);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.20.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.21.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.22.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.222.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.23.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.24.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 240 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 241 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 242 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 243 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 248 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 249 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.25.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 250 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8781824);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 251 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8781824);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 256 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8781824);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.26.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 260 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 53, 1048576);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.28.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.29.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.30.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.31.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.32.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
-plutil -replace AppleSymbolicHotKeys.33.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 33 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 125, 8650752);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.36.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.52.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
 plutil -replace AppleSymbolicHotKeys.60.enabled -bool NO ~/Library/Preferences/com.apple.symbolichotkeys.plist
@@ -104,10 +207,54 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 61 "{
         parameters = (32, 49, 1572864);
     };
 }"
-plutil -replace AppleSymbolicHotKeys.79.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 79 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
 plutil -replace AppleSymbolicHotKeys.80.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
-plutil -replace AppleSymbolicHotKeys.81.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
-plutil -replace AppleSymbolicHotKeys.82.enabled -bool YES ~/Library/Preferences/com.apple.symbolichotkeys.plist
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 81 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 123, 8650752);
+    };
+}"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 82 "{
+    enabled = 1;
+    value = {
+        type = standard;
+        parameters = (65535, 124, 8781824);
+    };
+}"
+
+# Disable Input Source switching shortcuts (conflicts with Option key app launching)
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 59 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (32, 49, 262144);
+    };
+}"
+
+# Disable Spotlight shortcuts (conflicts with Cmd+Space, use Alfred instead)
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "{
+    enabled = 0;
+    value = {
+        type = standard;
+        parameters = (65535, 49, 1048576);
+    };
+}"
+
+# Additional shortcuts for Hammerspoon compatibility
+# Disable all function key shortcuts that might conflict
+for i in {160..175}; do
+  defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add $i "{
+    enabled = 0;
+  }"
+done
 
 
 ###############################################################################
@@ -161,14 +308,30 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow showInputMenu -bo
 # Energy saving                                                               #
 ###############################################################################
 
-# Sleep the display after 15 minutes
-sudo pmset -a displaysleep 15
+# Display sleep times (must be lower than system sleep)
+# -b = battery, -c = charging/AC power, -a = all
+sudo pmset -b displaysleep 5    # Display sleeps after 5 min on battery
+sudo pmset -c displaysleep 15   # Display sleeps after 15 min while charging
 
-# Disable machine sleep while charging
-sudo pmset -c sleep 0
+# System sleep times
+sudo pmset -b sleep 10           # System sleeps after 10 min on battery
+sudo pmset -c sleep 0            # Never sleep while charging (good for dev work)
 
-# Set machine sleep to 5 minutes on battery
-sudo pmset -b sleep 5
+###############################################################################
+# Display & Performance (useful for stock trading & photo editing)           #
+###############################################################################
+
+# Enable HiDPI display modes (requires restart)
+sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
+
+# Disable transparency in menu bar and elsewhere (performance boost)
+defaults write com.apple.universalaccess reduceTransparency -bool true
+
+# Disable window animations (faster performance)
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+
+# Speed up expose animation
+defaults write com.apple.dock expose-animation-duration -float 0.15
 
 ###############################################################################
 # Screen                                                                      #
@@ -184,12 +347,43 @@ defaults write com.apple.screencapture location -string "${HOME}/Desktop"
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
 
+# Set screenshot format to PNG (best quality for technical screenshots)
+defaults write com.apple.screencapture type -string "png"
+
+# Include date in screenshot filenames
+defaults write com.apple.screencapture include-date -bool true
+
 # Enable subpixel font rendering on non-Apple LCDs
 # Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
 defaults write NSGlobalDomain AppleFontSmoothing -int 1
 
 # Default clock format
 defaults write com.apple.menuextra.clock DateFormat -string "MMM d h:mm a"
+
+###############################################################################
+# Developer Settings                                                          #
+###############################################################################
+
+# Disable the crash reporter
+defaults write com.apple.CrashReporter DialogType -string "none"
+
+# Enable full file path in title bar
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# Show ~/Library folder (useful for developers)
+chflags nohidden ~/Library
+
+# Disable Time Machine prompts when attaching new disks
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
+
+# Increase max file watches (useful for webpack, gulp, grunt, etc.)
+# Note: This requires editing /Library/LaunchDaemons/limit.maxfiles.plist
+# echo kern.maxfiles=65536 | sudo tee -a /etc/sysctl.conf
+# echo kern.maxfilesperproc=65536 | sudo tee -a /etc/sysctl.conf
+
+# Speed up wake from sleep (delay standby mode for 24 hours)
+# This prevents the Mac from entering deep sleep too quickly
+sudo pmset -a standbydelay 86400
 
 ###############################################################################
 # Finder                                                                      #
@@ -211,9 +405,6 @@ defaults write com.apple.finder ShowStatusBar -bool true
 
 # Finder: show path bar
 defaults write com.apple.finder ShowPathbar -bool true
-
-# Display full POSIX path as Finder window title
-defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
 # Keep folders on top when sorting by name
 defaults write com.apple.finder _FXSortFoldersFirst -bool true
@@ -247,8 +438,8 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
-# Show the ~/Library folder
-chflags nohidden ~/Library && xattr -d com.apple.FinderInfo ~/Library
+# Remove quarantine attributes from ~/Library
+xattr -d com.apple.FinderInfo ~/Library 2>/dev/null || true
 
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
@@ -384,6 +575,22 @@ defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+
+# Disable Photos app from launching on external camera connection
+defaults write com.apple.Photos AutoShowFirstTimeExperience -bool false
+
+###############################################################################
+# Notifications & Focus (useful for stock trading)                           #
+###############################################################################
+
+# Disable notification center sounds
+defaults write com.apple.notificationcenterui bannerTime -int 3
+
+# Don't show Siri in menu bar
+defaults write com.apple.Siri StatusMenuVisible -bool false
+
+# Disable Notification Center
+launchctl unload -w /System/Library/LaunchAgents/com.apple.notificationcenterui.plist 2>/dev/null || true
 
 ###############################################################################
 # Messages                                                                    #
