@@ -3,6 +3,7 @@
 cd "$(dirname "${BASH_SOURCE}")";
 
 function doIt() {
+    mkdir -p ~/.codex ~/.claude;
     rsync --exclude ".git/" \
         --exclude ".DS_Store" \
         --exclude ".macos" \
