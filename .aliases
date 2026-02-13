@@ -63,3 +63,7 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 # swith php versions
 alias php80="brew unlink php && brew link --overwrite --force php"
 alias php74="brew unlink php && brew link --overwrite --force php@7.4"
+
+# AI CLI shortcuts
+alias codexd="codex --dangerously-bypass-approvals-and-sandbox"
+alias clauded="claude --dangerously-skip-permissions"
