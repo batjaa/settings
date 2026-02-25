@@ -168,6 +168,34 @@ source bootstrap.sh
 # 4. Sync settings to ~/My Drive/Apps/Alfred (auto-configured in .macos)
 ```
 
+#### Tmux Plugins
+
+Tmux plugins are managed by [TPM (Tmux Plugin Manager)](https://github.com/tmux-plugins/tpm). Install TPM first, then install the plugins:
+
+```bash
+# 1. Install TPM
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# 2. Start tmux (or reload config if already running)
+tmux
+# Inside tmux: press Ctrl+A then R to reload config
+
+# 3. Install plugins
+# Inside tmux: press Ctrl+A then I (capital i) to install plugins
+# TPM will clone and load all plugins listed in .tmux.conf
+```
+
+**Included plugins:**
+
+| Plugin | Description |
+|--------|-------------|
+| `tmux-sensible` | Sensible defaults everyone can agree on |
+| `tmux-resurrect` | Save/restore sessions across tmux restarts (`Ctrl+A Ctrl+S` to save, `Ctrl+A Ctrl+R` to restore) |
+| `tmux-continuum` | Auto-saves sessions every 15 min and restores on tmux start |
+| `tmux-yank` | Copy to system clipboard from copy mode |
+
+**Updating plugins:** `Ctrl+A` then `U` (capital u) inside tmux.
+
 #### GitHub CLI
 
 ```bash
