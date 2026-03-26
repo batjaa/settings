@@ -11,7 +11,11 @@ Push the current branch and open a GitHub pull request with a well-crafted title
 
 ## Workflow
 
-### Step 1: Gather context
+### Step 1: Review code quality
+
+Run the `/simplify` skill on the changed code to check for reuse, quality, and efficiency issues. Fix any issues found before proceeding.
+
+### Step 2: Gather context
 
 Run these in parallel:
 - `git status` — check for uncommitted changes.
@@ -21,17 +25,17 @@ Run these in parallel:
 
 If there are uncommitted changes, ask the user whether to commit them first.
 
-### Step 2: Determine the base branch
+### Step 3: Determine the base branch
 
 - Default to `main` or `master` (whichever exists on the remote).
 - If the user provided a base branch argument, use that instead.
 
-### Step 3: Analyze changes
+### Step 4: Analyze changes
 
 - Review **all** commits on the branch, not just the latest one.
 - Identify the type of change (feature, fix, refactor, etc.).
 
-### Step 4: Draft the PR
+### Step 5: Draft the PR
 
 - **Title**: Under 70 characters, concise, descriptive.
 - **Body**: Use this format:
@@ -44,7 +48,7 @@ If there are uncommitted changes, ask the user whether to commit them first.
 - [ ] How to verify the changes work.
 ```
 
-### Step 5: Push and create
+### Step 6: Push and create
 
 Run these in parallel where possible:
 - Create a new branch if needed.
@@ -62,6 +66,6 @@ EOF
 )"
 ```
 
-### Step 6: Confirm
+### Step 7: Confirm
 
 - Return the PR URL to the user.

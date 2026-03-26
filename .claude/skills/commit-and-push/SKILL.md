@@ -11,20 +11,24 @@ Stage relevant changes, create a conventional commit, and push to the remote bra
 
 ## Workflow
 
-### Step 1: Inspect the working tree
+### Step 1: Review code quality
+
+Run the `/simplify` skill on the changed code to check for reuse, quality, and efficiency issues. Fix any issues found before proceeding.
+
+### Step 2: Inspect the working tree
 
 Run these in parallel:
 - `git status` — identify changed and untracked files.
 - `git diff` and `git diff --staged` — review all changes.
 - `git log --oneline -5` — check recent commit style.
 
-### Step 2: Stage files
+### Step 3: Stage files
 
 - Stage only the files relevant to the current change.
 - **Never** stage secrets (`.env`, credentials, tokens).
 - Prefer explicit file paths over `git add -A` or `git add .`.
 
-### Step 3: Write the commit message
+### Step 4: Write the commit message
 
 - Follow **Conventional Commits**: `<type>(<scope>): <description>`.
 - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ci`, `perf`, `revert`.
@@ -39,13 +43,13 @@ EOF
 )"
 ```
 
-### Step 4: Push
+### Step 5: Push
 
 - Push to the current branch's remote tracking branch.
 - If no upstream is set, push with `-u origin <branch>`.
 - **Never** force-push without explicit user approval.
 
-### Step 5: Confirm
+### Step 6: Confirm
 
 - Run `git status` to verify a clean working tree.
 - Show the commit hash and remote URL so the user can verify.
