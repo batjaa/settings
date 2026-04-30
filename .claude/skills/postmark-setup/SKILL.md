@@ -24,7 +24,7 @@ Configure Postmark as the mail transport in a Laravel project using Symfony's Po
 2. Update `.env`:
    ```
    MAIL_MAILER=postmark
-   POSTMARK_TOKEN=your-server-api-token
+   POSTMARK_API_KEY=your-server-api-token
    MAIL_FROM_ADDRESS=hello@yourapp.com
    MAIL_FROM_NAME="Your App"
    ```

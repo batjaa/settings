@@ -13,6 +13,7 @@
 
 ## CLI tools
 - Always include a `version` subcommand. Inject version at build time (e.g., Go ldflags). Default to `"dev"` locally.
+- For SVG to PNG conversion, don't assume ImageMagick will preserve the full asset. If fidelity matters, verify the rendered output and prefer `rsvg-convert` over `magick` / `convert` when available.
 
 ## PHP / Laravel
 

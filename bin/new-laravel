@@ -1,0 +1,440 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="dev"
+
+# ---------- help / version ----------
+usage() {
+    cat <<'USAGE'
+Usage: new-laravel <project-name> [--frontend <spa|inertia|blade>] [--nova] [--cashier] [--no-social]
+
+Options:
+  --frontend <mode>   Frontend stack (default: spa)
+                        spa     — Vue 3 + Pinia + vue-router + Sanctum SPA
+                        inertia — Vue 3 + Inertia + Fortify
+                        blade   — Livewire Volt + Alpine
+  --nova              Add Laravel Nova (requires auth.json)
+  --cashier           Add Laravel Cashier (Stripe)
+  --no-social         Skip Socialite (no social login)
+  --version           Print version
+  -h, --help          Show this help
+USAGE
+}
+
+if [[ $# -eq 0 ]]; then usage; exit 1; fi
+
+# ---------- defaults ----------
+PROJECT=""
+FRONTEND="spa"
+WITH_NOVA=false
+WITH_CASHIER=false
+WITH_SOCIAL=true
+
+# ---------- parse args ----------
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --frontend)  FRONTEND="$2"; shift 2 ;;
+        --nova)      WITH_NOVA=true; shift ;;
+        --cashier)   WITH_CASHIER=true; shift ;;
+        --no-social) WITH_SOCIAL=false; shift ;;
+        --version)   echo "new-laravel $VERSION"; exit 0 ;;
+        -h|--help)   usage; exit 0 ;;
+        -*)          echo "Unknown option: $1" >&2; exit 1 ;;
+        *)           PROJECT="$1"; shift ;;
+    esac
+done
+
+if [[ -z "$PROJECT" ]]; then echo "Error: project name required" >&2; exit 1; fi
+if [[ -d "$PROJECT" ]]; then echo "Error: directory '$PROJECT' already exists" >&2; exit 1; fi
+
+echo "==> Creating Laravel project: $PROJECT (frontend: $FRONTEND)"
+
+# ---------- scaffold ----------
+laravel new "$PROJECT" --no-interaction
+cd "$PROJECT"
+
+# ---------- core packages ----------
+echo "==> Installing core packages..."
+composer require \
+    laravel/sanctum \
+    symfony/postmark-mailer \
+    symfony/http-client \
+    league/flysystem-aws-s3-v3 \
+    laravel/nightwatch \
+    --no-interaction
+
+if $WITH_SOCIAL; then
+    composer require laravel/socialite --no-interaction
+fi
+
+if $WITH_CASHIER; then
+    composer require laravel/cashier --no-interaction
+fi
+
+if $WITH_NOVA; then
+    if [[ ! -f auth.json ]]; then
+        echo "Warning: auth.json not found — Nova install may fail without credentials."
+    fi
+    composer config repositories.nova '{"type": "composer", "url": "https://nova.laravel.com"}' --no-interaction
+    composer require laravel/nova --no-interaction
+fi
+
+# ---------- dev packages ----------
+echo "==> Installing dev packages..."
+composer require --dev \
+    laravel/boost \
+    laravel/pail \
+    laravel/pint \
+    --no-interaction
+
+# ---------- .env.example ----------
+echo "==> Configuring .env.example..."
+set_env() {
+    local key="$1" value="$2" file=".env.example"
+    if grep -q "^${key}=" "$file" 2>/dev/null; then
+        sed -i '' "s|^${key}=.*|${key}=${value}|" "$file"
+    else
+        echo "${key}=${value}" >> "$file"
+    fi
+}
+
+set_env DB_CONNECTION sqlite
+set_env SESSION_DRIVER database
+set_env CACHE_STORE database
+set_env QUEUE_CONNECTION database
+set_env FILESYSTEM_DISK local
+set_env MEDIA_DISK local
+set_env MAIL_MAILER log
+
+# copy to .env
+cp .env.example .env
+php artisan key:generate --no-interaction
+
+# ---------- composer scripts ----------
+echo "==> Adding composer scripts..."
+php -r "
+\$json = json_decode(file_get_contents('composer.json'), true);
+\$json['scripts']['setup'] = [
+    'composer install',
+    '@php -r \"file_exists(\'.env\') || copy(\'.env.example\', \'.env\');\"',
+    '@php artisan key:generate',
+    '@php artisan migrate --force',
+    'npm install',
+    'npm run build'
+];
+\$json['scripts']['dev'] = [
+    'Composer\\\Config::disableProcessTimeout',
+    'npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others'
+];
+\$json['scripts']['test'] = [
+    '@php artisan config:clear --ansi',
+    '@php artisan test'
+];
+file_put_contents('composer.json', json_encode(\$json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . \"\n\");
+"
+
+# ---------- app directories ----------
+mkdir -p app/Services app/Enums
+
+# ---------- frontend ----------
+echo "==> Setting up frontend: $FRONTEND..."
+
+case "$FRONTEND" in
+    spa)
+        npm install vue vue-router pinia axios @vitejs/plugin-vue
+        npm install -D tailwindcss @tailwindcss/vite typescript vue-tsc @playwright/test concurrently
+
+        # vite.config.js for Vue SPA
+        cat > vite.config.js <<'VITE'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.ts'],
+            refresh: true,
+        }),
+        vue(),
+        tailwindcss(),
+    ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+        },
+    },
+});
+VITE
+
+        # app.css with Tailwind import
+        mkdir -p resources/css
+        echo '@import "tailwindcss";' > resources/css/app.css
+
+        # Vue entry point
+        mkdir -p resources/js/{components,composables,layouts,pages,router,stores,types}
+        cat > resources/js/app.ts <<'APP'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+import router from './router';
+
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.mount('#app');
+APP
+
+        cat > resources/js/App.vue <<'VUE'
+<template>
+    <router-view />
+</template>
+VUE
+
+        cat > resources/js/router/index.ts <<'ROUTER'
+import { createRouter, createWebHistory } from 'vue-router';
+
+const routes = [
+    {
+        path: '/',
+        component: () => import('@/pages/Home.vue'),
+    },
+];
+
+export default createRouter({
+    history: createWebHistory(),
+    routes,
+});
+ROUTER
+
+        cat > resources/js/pages/Home.vue <<'HOME'
+<template>
+    <div class="flex min-h-screen items-center justify-center">
+        <h1 class="text-3xl font-bold">Welcome</h1>
+    </div>
+</template>
+HOME
+
+        cat > resources/js/env.d.ts <<'DTS'
+/// <reference types="vite/client" />
+
+declare module '*.vue' {
+    import type { DefineComponent } from 'vue';
+    const component: DefineComponent<{}, {}, any>;
+    export default component;
+}
+DTS
+
+        cat > tsconfig.json <<'TS'
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@/*": ["./resources/js/*"]
+        }
+    },
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"]
+}
+TS
+
+        # Single Blade shell
+        mkdir -p resources/views
+        cat > resources/views/app.blade.php <<'BLADE'
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name') }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.ts'])
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>
+BLADE
+
+        # Catch-all route for SPA
+        cat > routes/web.php <<'WEB'
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/{any?}', fn () => view('app'))->where('any', '.*');
+WEB
+
+        # Playwright config
+        cat > playwright.config.ts <<'PW'
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+    testDir: './e2e',
+    use: {
+        baseURL: process.env.E2E_BASE_URL ?? 'http://127.0.0.1:8000',
+    },
+});
+PW
+        mkdir -p e2e
+
+        # package.json scripts
+        npm pkg set scripts.build="vue-tsc && vite build"
+        npm pkg set scripts.dev="vite"
+        npm pkg set scripts.test:e2e="npx playwright test"
+        npm pkg set scripts.test:e2e:headed="npx playwright test --headed"
+        npm pkg set scripts.test:e2e:ui="npx playwright test --ui"
+        ;;
+
+    inertia)
+        composer require inertiajs/inertia-laravel laravel/fortify --no-interaction
+        npm install vue @inertiajs/vue3 @vitejs/plugin-vue
+        npm install -D tailwindcss @tailwindcss/vite typescript vue-tsc @playwright/test concurrently
+
+        cat > vite.config.js <<'VITE'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.ts'],
+            refresh: true,
+        }),
+        vue(),
+        tailwindcss(),
+    ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+        },
+    },
+});
+VITE
+
+        mkdir -p resources/css
+        echo '@import "tailwindcss";' > resources/css/app.css
+
+        mkdir -p resources/js/{components,Layouts,Pages,types}
+        cat > resources/js/app.ts <<'APP'
+import { createApp, h } from 'vue';
+import { createInertiaApp } from '@inertiajs/vue3';
+import '../css/app.css';
+
+createInertiaApp({
+    resolve: (name) => {
+        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true });
+        return pages[`./Pages/${name}.vue`];
+    },
+    setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .mount(el);
+    },
+});
+APP
+
+        cat > resources/js/env.d.ts <<'DTS'
+/// <reference types="vite/client" />
+
+declare module '*.vue' {
+    import type { DefineComponent } from 'vue';
+    const component: DefineComponent<{}, {}, any>;
+    export default component;
+}
+DTS
+
+        cat > tsconfig.json <<'TS'
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@/*": ["./resources/js/*"]
+        }
+    },
+    "include": ["resources/js/**/*.ts", "resources/js/**/*.vue"]
+}
+TS
+
+        cat > playwright.config.ts <<'PW'
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+    testDir: './e2e',
+    use: {
+        baseURL: process.env.E2E_BASE_URL ?? 'http://127.0.0.1:8000',
+    },
+});
+PW
+        mkdir -p e2e
+
+        npm pkg set scripts.build="vue-tsc && vite build"
+        npm pkg set scripts.dev="vite"
+        npm pkg set scripts.typecheck="vue-tsc --noEmit"
+        npm pkg set scripts.test:e2e="npx playwright test"
+        ;;
+
+    blade)
+        composer require livewire/volt --no-interaction
+        npm install -D tailwindcss @tailwindcss/vite alpinejs @playwright/test concurrently
+
+        cat > vite.config.js <<'VITE'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+        tailwindcss(),
+    ],
+});
+VITE
+
+        mkdir -p resources/css
+        echo '@import "tailwindcss";' > resources/css/app.css
+
+        npm pkg set scripts.build="vite build"
+        npm pkg set scripts.dev="vite"
+        ;;
+
+    *)
+        echo "Error: unknown frontend mode '$FRONTEND' (use: spa, inertia, blade)" >&2
+        exit 1
+        ;;
+esac
+
+# ---------- migrate ----------
+php artisan migrate --no-interaction
+
+# ---------- build ----------
+npm run build
+
+# ---------- done ----------
+echo ""
+echo "==> Done! Project '$PROJECT' is ready."
+echo ""
+echo "  cd $PROJECT"
+echo "  composer dev        # start all services"
+echo "  composer test       # run tests"
+echo ""
