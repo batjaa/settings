@@ -110,6 +110,17 @@ set_env MAIL_MAILER log
 cp .env.example .env
 php artisan key:generate --no-interaction
 
+# Trust proxy headers so generated apps work correctly behind SWAG/Coolify.
+php -r '
+$path = "bootstrap/app.php";
+$contents = file_get_contents($path);
+$search = "    ->withMiddleware(function (Middleware \$middleware): void {\n        //\n    })";
+$replace = "    ->withMiddleware(function (Middleware \$middleware): void {\n        \$middleware->trustProxies(\n            at: \"*\",\n            headers: Illuminate\\\\Http\\\\Request::HEADER_X_FORWARDED_FOR\n                | Illuminate\\\\Http\\\\Request::HEADER_X_FORWARDED_HOST\n                | Illuminate\\\\Http\\\\Request::HEADER_X_FORWARDED_PORT\n                | Illuminate\\\\Http\\\\Request::HEADER_X_FORWARDED_PROTO\n                | Illuminate\\\\Http\\\\Request::HEADER_X_FORWARDED_AWS_ELB,\n        );\n    })";
+if (str_contains($contents, $search)) {
+    file_put_contents($path, str_replace($search, $replace, $contents));
+}
+'
+
 # ---------- composer scripts ----------
 echo "==> Adding composer scripts..."
 php -r "

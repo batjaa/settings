@@ -1,0 +1,353 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="dev"
+
+usage() {
+    cat <<'USAGE'
+Usage: new-wormmon-app <project-name> [--path <dir>] [--dry-run] [--yes]
+
+Create a preview deployment in Coolify for the app defined in .batjaa/app.yml.
+
+Required environment variables:
+  COOLIFY_URL
+  COOLIFY_TOKEN
+  COOLIFY_SERVER_UUID
+  COOLIFY_DESTINATION_UUID
+
+Optional environment variables:
+  COOLIFY_PROJECT_UUID
+  COOLIFY_ENVIRONMENT_NAME   Default: production
+
+Options:
+  --path <dir>   Project directory (default: ~/git/<project-name>)
+  --dry-run      Print validation and planned actions without changing anything
+  --yes          Skip confirmation prompt after validation
+  --version      Print version
+  -h, --help     Show this help
+USAGE
+}
+
+if [[ $# -eq 0 ]]; then
+    usage
+    exit 1
+fi
+
+PROJECT=""
+PROJECT_PATH=""
+DRY_RUN=false
+ASSUME_YES=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --path) PROJECT_PATH="$2"; shift 2 ;;
+        --dry-run) DRY_RUN=true; shift ;;
+        --yes) ASSUME_YES=true; shift ;;
+        --version) echo "new-wormmon-app $VERSION"; exit 0 ;;
+        -h|--help) usage; exit 0 ;;
+        -*) echo "Unknown option: $1" >&2; exit 1 ;;
+        *) PROJECT="$1"; shift ;;
+    esac
+done
+
+if [[ -z "$PROJECT" ]]; then
+    echo "Error: project name required" >&2
+    exit 1
+fi
+
+if [[ -z "$PROJECT_PATH" ]]; then
+    PROJECT_PATH="${HOME}/git/${PROJECT}"
+fi
+
+MANIFEST_PATH="${PROJECT_PATH}/.batjaa/app.yml"
+
+for command in curl gh jq openssl ruby ssh-keygen; do
+    if ! command -v "$command" >/dev/null 2>&1; then
+        echo "Error: required command '$command' is not installed" >&2
+        exit 1
+    fi
+done
+
+if ! gh auth status >/dev/null 2>&1; then
+    echo "Error: GitHub CLI is not authenticated" >&2
+    exit 1
+fi
+
+for var_name in COOLIFY_URL COOLIFY_TOKEN COOLIFY_SERVER_UUID COOLIFY_DESTINATION_UUID; do
+    if [[ -z "${!var_name:-}" ]]; then
+        echo "Error: ${var_name} is required" >&2
+        exit 1
+    fi
+done
+
+if [[ ! -d "$PROJECT_PATH" ]]; then
+    echo "Error: project directory '$PROJECT_PATH' does not exist" >&2
+    exit 1
+fi
+
+if [[ ! -f "$MANIFEST_PATH" ]]; then
+    echo "Error: manifest '$MANIFEST_PATH' does not exist" >&2
+    exit 1
+fi
+
+manifest_value() {
+    local ruby_expr="$1"
+    ruby -ryaml -e "data = YAML.load_file(ARGV[0]); value = ${ruby_expr}; puts(value.nil? ? '' : value)" "$MANIFEST_PATH"
+}
+
+APP_NAME="$(manifest_value 'data.fetch("name")')"
+REPO_SLUG="$(manifest_value 'data.fetch("repo")')"
+PREVIEW_DOMAIN="$(manifest_value 'data.fetch("preview_domain")')"
+DB_DRIVER="$(manifest_value 'data.fetch("database").fetch("driver")')"
+DB_NAME="$(manifest_value 'data.fetch("database").fetch("name")')"
+DEPLOY_TYPE="$(manifest_value 'data.fetch("deploy").fetch("type")')"
+COMPOSE_FILE="$(manifest_value 'data.fetch("deploy").fetch("compose_file")')"
+SERVICE_NAME="$(manifest_value 'data.fetch("deploy").fetch("service")')"
+SERVICE_PORT="$(manifest_value 'data.fetch("deploy").fetch("port")')"
+ENVIRONMENT_NAME="${COOLIFY_ENVIRONMENT_NAME:-$(manifest_value 'data.dig("coolify", "environment") || "production"')}"
+COMPOSE_FILE_API_PATH="$COMPOSE_FILE"
+if [[ "$COMPOSE_FILE_API_PATH" != /* ]]; then
+    COMPOSE_FILE_API_PATH="/${COMPOSE_FILE_API_PATH}"
+fi
+
+if [[ "$DEPLOY_TYPE" != "docker_compose" ]]; then
+    echo "Error: only deploy.type=docker_compose is supported right now" >&2
+    exit 1
+fi
+
+APP_DB_CONNECTION="$DB_DRIVER"
+if [[ "$DB_DRIVER" == "postgres" ]]; then
+    APP_DB_CONNECTION="pgsql"
+fi
+
+if [[ ! -f "${PROJECT_PATH}/${COMPOSE_FILE}" ]]; then
+    echo "Error: compose file '${PROJECT_PATH}/${COMPOSE_FILE}' does not exist" >&2
+    exit 1
+fi
+
+coolify_api() {
+    local method="$1"
+    local path="$2"
+    local data="${3:-}"
+
+    if [[ -n "$data" ]]; then
+        curl -fsSL \
+            -X "$method" \
+            -H "Authorization: Bearer ${COOLIFY_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "$data" \
+            "${COOLIFY_URL%/}/api/v1${path}"
+    else
+        curl -fsSL \
+            -X "$method" \
+            -H "Authorization: Bearer ${COOLIFY_TOKEN}" \
+            "${COOLIFY_URL%/}/api/v1${path}"
+    fi
+}
+
+preview_dns_status="free"
+if [[ -n "$(dig +short "$PREVIEW_DOMAIN" 2>/dev/null || true)" ]]; then
+    if [[ "$PREVIEW_DOMAIN" == *.preview.batjaa.site ]]; then
+        preview_dns_status="managed_by_wildcard"
+    else
+        preview_dns_status="in_use"
+    fi
+fi
+
+repo_json="$(gh api "repos/${REPO_SLUG}")"
+repo_private="$(printf '%s' "$repo_json" | jq -r '.private')"
+repo_ssh_url="$(printf '%s' "$repo_json" | jq -r '.ssh_url')"
+repo_default_branch="$(printf '%s' "$repo_json" | jq -r '.default_branch')"
+
+project_exists="no"
+project_uuid="${COOLIFY_PROJECT_UUID:-}"
+if [[ -n "$project_uuid" ]]; then
+    project_exists="yes"
+else
+    project_lookup="$(coolify_api GET "/projects" | jq -r --arg name "$APP_NAME" '.[] | select(.name == $name) | .uuid' | head -n 1)"
+    if [[ -n "$project_lookup" ]]; then
+        project_uuid="$project_lookup"
+        project_exists="yes"
+    fi
+fi
+
+app_exists="no"
+existing_app_uuid="$(coolify_api GET "/applications" | jq -r --arg name "$APP_NAME" --arg repo "$repo_ssh_url" '.[] | select(.name == $name or .git_repository == $repo) | .uuid' | head -n 1)"
+if [[ -n "$existing_app_uuid" ]]; then
+    app_exists="yes"
+fi
+
+coolify_key_name="github-${REPO_SLUG//\//-}"
+coolify_key_uuid="$(coolify_api GET "/security/keys" | jq -r --arg name "$coolify_key_name" '.[] | select(.name == $name) | .uuid' | head -n 1)"
+deploy_key_title="coolify-${APP_NAME}"
+github_deploy_key_id="$(gh api "repos/${REPO_SLUG}/keys" --jq ".[] | select(.title == \"${deploy_key_title}\") | .id" | head -n 1 || true)"
+
+warnings=()
+if [[ "$preview_dns_status" == "in_use" ]]; then
+    warnings+=("preview domain '${PREVIEW_DOMAIN}' already resolves outside the managed wildcard pattern")
+fi
+
+if [[ "$app_exists" == "yes" ]]; then
+    warnings+=("Coolify application '${APP_NAME}' already exists")
+fi
+
+if [[ "$DB_DRIVER" != "postgres" ]]; then
+    warnings+=("database driver '${DB_DRIVER}' is not covered by the generated compose defaults")
+fi
+
+echo "==> Validation"
+echo "  project path: ${PROJECT_PATH}"
+echo "  manifest: ${MANIFEST_PATH}"
+echo "  github repo: ${REPO_SLUG}"
+echo "  repo private: ${repo_private}"
+echo "  preview domain: ${PREVIEW_DOMAIN}"
+echo "  preview domain DNS: ${preview_dns_status}"
+echo "  coolify url: ${COOLIFY_URL}"
+echo "  coolify server uuid: ${COOLIFY_SERVER_UUID}"
+echo "  coolify destination uuid: ${COOLIFY_DESTINATION_UUID}"
+echo "  coolify project exists: ${project_exists}"
+echo "  coolify app exists: ${app_exists}"
+echo "  coolify deploy key exists: $( [[ -n "$coolify_key_uuid" ]] && echo yes || echo no )"
+echo "  github deploy key exists: $( [[ -n "$github_deploy_key_id" ]] && echo yes || echo no )"
+if [[ ${#warnings[@]} -gt 0 ]]; then
+    echo "  warnings:"
+    for warning in "${warnings[@]}"; do
+        echo "    - ${warning}"
+    done
+fi
+
+if [[ "$app_exists" == "yes" ]]; then
+    echo "Error: Coolify application '${APP_NAME}' already exists" >&2
+    exit 1
+fi
+
+if $DRY_RUN; then
+    echo "==> Dry run complete. No changes made."
+    exit 0
+fi
+
+if ! $ASSUME_YES; then
+    if [[ ${#warnings[@]} -gt 0 ]]; then
+        read -r -p "Proceed after reviewing the warnings above? (y/N) " reply
+    else
+        read -r -p "Proceed with Coolify preview deployment setup? (y/N) " reply
+    fi
+    if [[ ! "$reply" =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 1
+    fi
+fi
+
+if [[ -z "$project_uuid" ]]; then
+    project_uuid="$(coolify_api POST "/projects" "$(jq -nc --arg name "$APP_NAME" --arg description "Managed by new-wormmon-app for ${REPO_SLUG}" '{name: $name, description: $description}')" | jq -r '.uuid')"
+fi
+
+environment_exists="no"
+if coolify_api GET "/projects/${project_uuid}/${ENVIRONMENT_NAME}" >/tmp/new-wormmon-app-environment.json 2>/dev/null; then
+    environment_exists="yes"
+else
+    coolify_api POST "/projects/${project_uuid}/environments" "$(jq -nc --arg name "$ENVIRONMENT_NAME" '{name: $name}')" >/tmp/new-wormmon-app-environment.json
+fi
+
+if [[ "$repo_private" == "true" ]] && [[ -z "$coolify_key_uuid" ]]; then
+    temp_dir="$(mktemp -d)"
+    key_path="${temp_dir}/coolify-deploy-key"
+    ssh-keygen -q -t ed25519 -N "" -C "${deploy_key_title}" -f "$key_path" >/dev/null
+
+    private_key_content="$(cat "$key_path")"
+    coolify_key_uuid="$(coolify_api POST "/security/keys" "$(jq -nc --arg name "$coolify_key_name" --arg description "Deploy key for ${REPO_SLUG}" --arg private_key "$private_key_content" '{name: $name, description: $description, private_key: $private_key}')" | jq -r '.uuid')"
+
+    if [[ -z "$github_deploy_key_id" ]]; then
+        gh repo deploy-key add "$key_path.pub" --repo "$REPO_SLUG" --title "$deploy_key_title"
+    fi
+
+    rm -rf "$temp_dir"
+fi
+
+if [[ "$repo_private" == "true" ]] && [[ -n "$coolify_key_uuid" ]] && [[ -z "$github_deploy_key_id" ]]; then
+    temp_public_key="$(mktemp)"
+    coolify_api GET "/security/keys/${coolify_key_uuid}" | jq -r '.public_key' > "$temp_public_key"
+    gh repo deploy-key add "$temp_public_key" --repo "$REPO_SLUG" --title "$deploy_key_title"
+    rm -f "$temp_public_key"
+fi
+
+app_payload_common="$(jq -nc \
+    --arg project_uuid "$project_uuid" \
+    --arg server_uuid "$COOLIFY_SERVER_UUID" \
+    --arg environment_name "$ENVIRONMENT_NAME" \
+    --arg destination_uuid "$COOLIFY_DESTINATION_UUID" \
+    --arg git_repository "$repo_ssh_url" \
+    --arg git_branch "$repo_default_branch" \
+    --arg build_pack "dockercompose" \
+    --arg name "$APP_NAME" \
+    --arg description "Managed by new-wormmon-app for ${REPO_SLUG}" \
+    --arg ports_exposes "$SERVICE_PORT" \
+    --arg docker_compose_location "$COMPOSE_FILE_API_PATH" \
+    --arg service_name "$SERVICE_NAME" \
+    --arg service_domain "https://${PREVIEW_DOMAIN}" \
+    '{
+      project_uuid: $project_uuid,
+      server_uuid: $server_uuid,
+      environment_name: $environment_name,
+      destination_uuid: $destination_uuid,
+      git_repository: $git_repository,
+      git_branch: $git_branch,
+      build_pack: $build_pack,
+      name: $name,
+      description: $description,
+      ports_exposes: $ports_exposes,
+      docker_compose_location: $docker_compose_location,
+      docker_compose_domains: [{name: $service_name, domain: $service_domain}],
+      is_auto_deploy_enabled: true,
+      is_force_https_enabled: true,
+      instant_deploy: false,
+      force_domain_override: true
+    }')"
+
+if [[ "$repo_private" == "true" ]]; then
+    app_uuid="$(coolify_api POST "/applications/private-deploy-key" "$(printf '%s' "$app_payload_common" | jq --arg private_key_uuid "$coolify_key_uuid" '. + {private_key_uuid: $private_key_uuid}')" | jq -r '.uuid')"
+else
+    app_uuid="$(coolify_api POST "/applications/public" "$app_payload_common" | jq -r '.uuid')"
+fi
+
+app_key="base64:$(openssl rand -base64 32)"
+db_password="$(openssl rand -base64 24 | tr -d '\n')"
+db_username="${APP_NAME}"
+app_url="https://${PREVIEW_DOMAIN}"
+
+coolify_api PATCH "/applications/${app_uuid}/envs/bulk" "$(jq -nc \
+    --arg app_name "$APP_NAME" \
+    --arg app_url "$app_url" \
+    --arg app_key "$app_key" \
+    --arg db_connection "$APP_DB_CONNECTION" \
+    --arg db_name "$DB_NAME" \
+    --arg db_username "$db_username" \
+    --arg db_password "$db_password" \
+    '{
+      data: [
+        {key: "APP_NAME", value: $app_name},
+        {key: "APP_ENV", value: "production"},
+        {key: "APP_DEBUG", value: "false"},
+        {key: "APP_URL", value: $app_url},
+        {key: "APP_KEY", value: $app_key, is_shown_once: true},
+        {key: "DB_CONNECTION", value: $db_connection},
+        {key: "DB_HOST", value: "db"},
+        {key: "DB_PORT", value: "5432"},
+        {key: "DB_DATABASE", value: $db_name},
+        {key: "DB_USERNAME", value: $db_username},
+        {key: "DB_PASSWORD", value: $db_password, is_shown_once: true},
+        {key: "CACHE_STORE", value: "database"},
+        {key: "QUEUE_CONNECTION", value: "database"},
+        {key: "SESSION_DRIVER", value: "database"},
+        {key: "RUN_MIGRATIONS", value: "true"}
+      ]
+    }')" >/dev/null
+
+deployment_json="$(coolify_api GET "/applications/${app_uuid}/start?instant_deploy=true")"
+deployment_uuid="$(printf '%s' "$deployment_json" | jq -r '.deployment_uuid // empty')"
+
+echo "==> Coolify application created: ${app_uuid}"
+echo "==> Preview URL: ${app_url}"
+if [[ -n "$deployment_uuid" ]]; then
+    echo "==> Deployment queued: ${deployment_uuid}"
+fi

@@ -100,6 +100,33 @@ open /Applications/Hammerspoon.app
 | `git/` | Git merge tool and advanced git configurations |
 | `bin/` | Custom executable scripts |
 
+### Project Bootstrap Scripts
+
+| Script | Description |
+|--------|-------------|
+| `bin/new-laravel` | Scaffold a Laravel app with your preferred frontend stack and defaults |
+| `bin/new-app-config` | Write `.batjaa/app.yml` deployment metadata for an app under `~/git/<name>` by default |
+| `bin/new-laravel-deploy` | Generate Docker/Coolify deployment files for a Laravel app |
+| `bin/new-repo` | Validate local dir, GitHub auth, repo/remote availability, normalize to `main`, then create the repo, add `origin`, make the first commit, and push |
+| `bin/new-wormmon-app` | Validate Coolify/GitHub state, then create a preview deployment on `wormmon` from `.batjaa/app.yml` |
+| `bin/new-app` | Validate `~/git/<name>`, repo, DNS, and Coolify settings first, then run scaffold + manifest + deploy files + repo creation + preview rollout |
+
+To enable the `wormmon` rollout commands, export these variables in your shell profile:
+
+```bash
+export COOLIFY_URL="https://deploy.batjaa.site"
+export COOLIFY_TOKEN="..."
+export COOLIFY_SERVER_UUID="..."
+export COOLIFY_DESTINATION_UUID="..."
+```
+
+Optional:
+
+```bash
+export COOLIFY_PROJECT_UUID="..."
+export COOLIFY_ENVIRONMENT_NAME="production"
+```
+
 ---
 
 ## 🔧 Detailed Setup
