@@ -1,0 +1,333 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SOURCE_DIR="$ROOT/ai/skills"
+OVERLAY_ROOT="$ROOT/ai/providers"
+
+DEFAULT_PROVIDERS=("claude" "codex")
+SELECTED_PROVIDERS=()
+SELECTED_SCOPES=()
+DRY_RUN=0
+CHECK_ONLY=0
+
+usage() {
+    cat <<'EOF'
+Usage: bin/ai-sync [options]
+
+Sync canonical AI skills from ai/skills into provider-specific directories.
+
+Options:
+  --home              Install to user homes, e.g. ~/.claude/skills and ~/.codex/skills.
+  --repo              Generate provider skill directories in this repo.
+  --all               Sync both --repo and --home.
+  --provider NAME     Sync one provider. Repeat to sync multiple providers.
+                      Defaults to claude and codex.
+  --dry-run, -n       Print actions without changing files.
+  --check             Validate ai/skills only.
+  --help, -h          Show this help.
+
+Environment:
+  CLAUDE_HOME         Override Claude home. Defaults to ~/.claude.
+  CODEX_HOME          Override Codex home. Defaults to ~/.codex.
+  AI_SYNC_<PROVIDER>_<SCOPE>_SKILLS_DIR
+                      Add/override a provider target directory. SCOPE is HOME or REPO.
+  AI_SYNC_<PROVIDER>_FRONTMATTER
+                      Frontmatter mode: passthrough or codex. Defaults by provider.
+EOF
+}
+
+log() {
+    printf '%s\n' "$*"
+}
+
+run() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        printf 'DRY RUN:'
+        printf ' %q' "$@"
+        printf '\n'
+        return 0
+    fi
+
+    "$@"
+}
+
+env_key() {
+    printf '%s' "$1" | tr '[:lower:]-' '[:upper:]_'
+}
+
+custom_env_value() {
+    local name="$1"
+    if [ -n "${!name:-}" ]; then
+        printf '%s\n' "${!name}"
+        return 0
+    fi
+
+    return 1
+}
+
+provider_skills_dir() {
+    local provider="$1"
+    local scope="$2"
+    local provider_key
+    local scope_key
+    local custom_var
+
+    provider_key="$(env_key "$provider")"
+    scope_key="$(env_key "$scope")"
+    custom_var="AI_SYNC_${provider_key}_${scope_key}_SKILLS_DIR"
+
+    if custom_env_value "$custom_var"; then
+        return 0
+    fi
+
+    case "$provider:$scope" in
+        claude:home)
+            printf '%s\n' "${CLAUDE_HOME:-$HOME/.claude}/skills"
+            ;;
+        claude:repo)
+            printf '%s\n' "$ROOT/.claude/skills"
+            ;;
+        codex:home)
+            printf '%s\n' "${CODEX_HOME:-$HOME/.codex}/skills"
+            ;;
+        codex:repo)
+            printf '%s\n' "$ROOT/.codex/skills"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+provider_frontmatter_mode() {
+    local provider="$1"
+    local provider_key
+    local custom_var
+
+    provider_key="$(env_key "$provider")"
+    custom_var="AI_SYNC_${provider_key}_FRONTMATTER"
+
+    if custom_env_value "$custom_var"; then
+        return 0
+    fi
+
+    case "$provider" in
+        codex)
+            printf '%s\n' "codex"
+            ;;
+        *)
+            printf '%s\n' "passthrough"
+            ;;
+    esac
+}
+
+normalize_codex_skill() {
+    local source="$1"
+    local dest="$2"
+
+    awk '
+        NR == 1 && $0 == "---" {
+            print
+            in_frontmatter = 1
+            next
+        }
+
+        in_frontmatter {
+            if ($0 == "---") {
+                print
+                in_frontmatter = 0
+                keep = 0
+                next
+            }
+
+            if ($0 ~ /^[A-Za-z0-9_-]+:/) {
+                key = $0
+                sub(/:.*/, "", key)
+                keep = (key == "name" || key == "description")
+            }
+
+            if (keep) {
+                print
+            }
+            next
+        }
+
+        {
+            print
+        }
+    ' "$source" > "$dest"
+}
+
+validate_skills() {
+    local failures=0
+    local skill_dir
+    local skill_name
+    local skill_file
+    local frontmatter_name
+
+    if [ ! -d "$SOURCE_DIR" ]; then
+        log "Missing source directory: $SOURCE_DIR"
+        return 1
+    fi
+
+    for skill_dir in "$SOURCE_DIR"/*; do
+        [ -d "$skill_dir" ] || continue
+
+        skill_name="$(basename "$skill_dir")"
+        skill_file="$skill_dir/SKILL.md"
+
+        if [ ! -f "$skill_file" ]; then
+            log "Missing SKILL.md: $skill_dir"
+            failures=$((failures + 1))
+            continue
+        fi
+
+        if find "$skill_dir" -maxdepth 1 -type f -name 'skill.md' | grep -q .; then
+            log "Use SKILL.md, not skill.md: $skill_dir"
+            failures=$((failures + 1))
+        fi
+
+        if ! sed -n '1p' "$skill_file" | grep -qx -- '---'; then
+            log "Missing YAML frontmatter: $skill_file"
+            failures=$((failures + 1))
+            continue
+        fi
+
+        if ! sed -n '2,80p' "$skill_file" | grep -q '^description:'; then
+            log "Missing description: $skill_file"
+            failures=$((failures + 1))
+        fi
+
+        frontmatter_name="$(awk -F':[[:space:]]*' '$1 == "name" { print $2; exit }' "$skill_file" | tr -d '"')"
+        if [ -z "$frontmatter_name" ]; then
+            log "Missing name: $skill_file"
+            failures=$((failures + 1))
+        elif [ "$frontmatter_name" != "$skill_name" ]; then
+            log "Skill name mismatch: $skill_file has '$frontmatter_name', expected '$skill_name'"
+            failures=$((failures + 1))
+        fi
+    done
+
+    if [ "$failures" -gt 0 ]; then
+        return 1
+    fi
+
+    log "Validated skills in $SOURCE_DIR"
+}
+
+copy_skill() {
+    local provider="$1"
+    local target_root="$2"
+    local skill_dir="$3"
+    local skill_name
+    local dest
+    local overlay
+    local mode
+
+    skill_name="$(basename "$skill_dir")"
+    dest="$target_root/$skill_name"
+    overlay="$OVERLAY_ROOT/$provider/skills/$skill_name"
+    mode="$(provider_frontmatter_mode "$provider")"
+
+    run rm -rf "$dest"
+    run mkdir -p "$dest"
+    run rsync -a --exclude 'SKILL.md' "$skill_dir/" "$dest/"
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "DRY RUN: render $mode SKILL.md for $provider/$skill_name"
+    elif [ "$mode" = "codex" ]; then
+        normalize_codex_skill "$skill_dir/SKILL.md" "$dest/SKILL.md"
+    elif [ "$mode" = "passthrough" ]; then
+        cp "$skill_dir/SKILL.md" "$dest/SKILL.md"
+    else
+        log "Unknown frontmatter mode '$mode' for provider '$provider'"
+        return 1
+    fi
+
+    if [ -d "$overlay" ]; then
+        run rsync -a "$overlay/" "$dest/"
+    fi
+}
+
+sync_provider_scope() {
+    local provider="$1"
+    local scope="$2"
+    local target_root
+    local skill_dir
+    local count=0
+
+    if ! target_root="$(provider_skills_dir "$provider" "$scope")"; then
+        log "No $scope target configured for provider '$provider'"
+        return 1
+    fi
+
+    run mkdir -p "$target_root"
+
+    for skill_dir in "$SOURCE_DIR"/*; do
+        [ -d "$skill_dir" ] || continue
+        copy_skill "$provider" "$target_root" "$skill_dir"
+        count=$((count + 1))
+    done
+
+    log "Synced $count skills to $provider ($scope): $target_root"
+}
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --home)
+            SELECTED_SCOPES+=("home")
+            ;;
+        --repo)
+            SELECTED_SCOPES+=("repo")
+            ;;
+        --all)
+            SELECTED_SCOPES=("repo" "home")
+            ;;
+        --provider)
+            if [ "${2:-}" = "" ]; then
+                log "--provider requires a value"
+                exit 2
+            fi
+            SELECTED_PROVIDERS+=("$2")
+            shift
+            ;;
+        --dry-run|-n)
+            DRY_RUN=1
+            ;;
+        --check)
+            CHECK_ONLY=1
+            ;;
+        --help|-h)
+            usage
+            exit 0
+            ;;
+        *)
+            log "Unknown option: $1"
+            usage
+            exit 2
+            ;;
+    esac
+    shift
+done
+
+validate_skills
+
+if [ "$CHECK_ONLY" -eq 1 ]; then
+    exit 0
+fi
+
+if [ "${#SELECTED_PROVIDERS[@]}" -eq 0 ]; then
+    SELECTED_PROVIDERS=("${DEFAULT_PROVIDERS[@]}")
+fi
+
+if [ "${#SELECTED_SCOPES[@]}" -eq 0 ]; then
+    SELECTED_SCOPES=("home")
+fi
+
+for provider in "${SELECTED_PROVIDERS[@]}"; do
+    for scope in "${SELECTED_SCOPES[@]}"; do
+        sync_provider_scope "$provider" "$scope"
+    done
+done

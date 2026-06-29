@@ -32,3 +32,9 @@ before.defaults
 # Build
 # --------------------
 build
+
+# --------------------
+# Generated AI provider installs
+# --------------------
+.claude/skills/
+.codex/skills/

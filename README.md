@@ -88,6 +88,7 @@ open /Applications/Hammerspoon.app
 | `.hammerspoon/` | **Window management** - Keyboard shortcuts for window positioning and app launching |
 | `brew.sh` | **Homebrew packages** - Installs CLI tools and GUI applications |
 | `bootstrap.sh` | Syncs dotfiles from this repo to home directory |
+| `ai/` | Shared AI agent skills, synced into Claude and Codex from one source of truth |
 
 ### Application Configurations
 
@@ -161,7 +162,21 @@ cd ~/git/settings
 **What it does:**
 - Copies `.bash_profile`, `.aliases`, `.exports`, etc. to `~/`
 - Excludes `.macos`, `README.md`, and app-specific configs
+- Installs AI skills from `ai/skills` into `~/.claude/skills` and `~/.codex/skills`
 - Automatically sources `.bash_profile` after copying
+
+### AI Agent Skills
+
+Reusable Claude and Codex skills live in `ai/skills`. Sync them after editing:
+
+```bash
+bin/ai-sync --check
+bin/ai-sync --home
+```
+
+The sync command can add more providers later through provider-specific targets
+and overlays under `ai/providers/`. It only replaces skills managed in
+`ai/skills`; other installed provider skills are left alone.
 
 **To update later:**
 ```bash

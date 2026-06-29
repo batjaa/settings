@@ -13,10 +13,14 @@ function doIt() {
         --exclude "iterm2" \
         --exclude "karabiner" \
         --exclude "sublime" \
+        --exclude "ai" \
+        --exclude ".claude/skills" \
+        --exclude ".codex/skills" \
         --exclude "brew*" \
         --exclude ".hammerspoon" \
         --exclude "settings.sublime-*" \
         -avh --no-perms . ~;
+    ./bin/ai-sync --home;
     source ~/.bash_profile;
 }
 
