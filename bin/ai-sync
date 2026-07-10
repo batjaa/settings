@@ -5,6 +5,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SOURCE_DIR="$ROOT/ai/skills"
 OVERLAY_ROOT="$ROOT/ai/providers"
+AGENTS_SRC="$ROOT/ai/AGENTS.md"
+RULES_SRC_DIR="$ROOT/ai/rules"
 
 DEFAULT_PROVIDERS=("claude" "codex")
 SELECTED_PROVIDERS=()
@@ -16,7 +18,13 @@ usage() {
     cat <<'EOF'
 Usage: bin/ai-sync [options]
 
-Sync canonical AI skills from ai/skills into provider-specific directories.
+Sync canonical AI skills from ai/skills, and global instructions from
+ai/AGENTS.md + ai/rules, into provider-specific directories.
+
+Instructions rendering:
+  Claude gets CLAUDE.md from ai/AGENTS.md, plus ai/rules/*.md copied to a
+  rules/ directory (path-scoped rules load only when matching files are read).
+  Codex has no rules mechanism, so AGENTS.md gets ai/rules bodies appended.
 
 Options:
   --home              Install to user homes, e.g. ~/.claude/skills and ~/.codex/skills.
@@ -251,6 +259,84 @@ copy_skill() {
     fi
 }
 
+strip_frontmatter() {
+    awk '
+        NR == 1 && $0 == "---" { in_frontmatter = 1; next }
+        in_frontmatter { if ($0 == "---") { in_frontmatter = 0 }; next }
+        !started && $0 == "" { next }
+        { started = 1; print }
+    ' "$1"
+}
+
+instructions_target() {
+    local provider="$1"
+    local scope="$2"
+
+    case "$provider:$scope" in
+        claude:home)
+            printf '%s\n' "${CLAUDE_HOME:-$HOME/.claude}/CLAUDE.md"
+            ;;
+        claude:repo)
+            printf '%s\n' "$ROOT/.claude/CLAUDE.md"
+            ;;
+        codex:home)
+            printf '%s\n' "${CODEX_HOME:-$HOME/.codex}/AGENTS.md"
+            ;;
+        codex:repo)
+            printf '%s\n' "$ROOT/.codex/AGENTS.md"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+sync_instructions() {
+    local provider="$1"
+    local scope="$2"
+    local target
+    local rules_target
+    local rule
+
+    [ -f "$AGENTS_SRC" ] || return 0
+
+    if ! target="$(instructions_target "$provider" "$scope")"; then
+        return 0
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "DRY RUN: render instructions for $provider ($scope): $target"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$target")"
+    {
+        printf '<!-- Generated from ai/AGENTS.md by bin/ai-sync - edit there, not here. -->\n\n'
+        cat "$AGENTS_SRC"
+        if [ "$provider" = "codex" ] && [ -d "$RULES_SRC_DIR" ]; then
+            for rule in "$RULES_SRC_DIR"/*.md; do
+                [ -f "$rule" ] || continue
+                printf '\n'
+                strip_frontmatter "$rule"
+            done
+        fi
+    } > "$target"
+
+    if [ "$provider" = "claude" ] && [ -d "$RULES_SRC_DIR" ]; then
+        case "$scope" in
+            home) rules_target="${CLAUDE_HOME:-$HOME/.claude}/rules" ;;
+            repo) rules_target="$ROOT/.claude/rules" ;;
+            *) rules_target="" ;;
+        esac
+        if [ -n "$rules_target" ]; then
+            run mkdir -p "$rules_target"
+            run rsync -a "$RULES_SRC_DIR/" "$rules_target/"
+        fi
+    fi
+
+    log "Synced instructions to $provider ($scope): $target"
+}
+
 sync_provider_scope() {
     local provider="$1"
     local scope="$2"
@@ -329,5 +415,6 @@ fi
 for provider in "${SELECTED_PROVIDERS[@]}"; do
     for scope in "${SELECTED_SCOPES[@]}"; do
         sync_provider_scope "$provider" "$scope"
+        sync_instructions "$provider" "$scope"
     done
 done

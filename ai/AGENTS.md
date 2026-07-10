@@ -1,5 +1,3 @@
-<!-- Generated from ai/AGENTS.md by bin/ai-sync - edit there, not here. -->
-
 # Global Agent Instructions
 
 ## Git

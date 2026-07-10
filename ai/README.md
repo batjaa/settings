@@ -1,18 +1,23 @@
 # AI Agent Configuration
 
-This directory is the source of truth for reusable AI agent skills.
+This directory is the source of truth for reusable AI agent skills and global
+agent instructions.
 
 ## Layout
 
 | Path | Purpose |
 |------|---------|
+| `AGENTS.md` | Canonical global instructions, rendered to `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Never edit the rendered copies. |
+| `rules/<name>.md` | Path-scoped guidance (`paths:` frontmatter globs). Claude gets them as `~/.claude/rules/`, loaded only when matching files are read; Codex has no rules mechanism, so their bodies are appended to its `AGENTS.md`. |
 | `skills/<name>/SKILL.md` | Canonical skill instructions. Keep these provider-neutral when practical. |
 | `skills/<name>/scripts/` | Optional deterministic scripts bundled with a skill. |
 | `skills/<name>/references/` | Optional reference material a skill can load on demand. |
 | `skills/<name>/assets/` | Optional templates or assets used by a skill. |
 | `providers/<provider>/skills/<name>/` | Optional provider-specific overlay copied after the canonical skill. |
 
-The sync command installs canonical skills into provider-specific locations:
+The sync command installs canonical skills and instructions into
+provider-specific locations (`--all` also refreshes the repo copies that
+`bootstrap.sh` rsyncs):
 
 ```bash
 bin/ai-sync --home
@@ -20,10 +25,10 @@ bin/ai-sync --home
 
 By default this syncs Claude and Codex:
 
-| Provider | Home target |
+| Provider | Home targets |
 |----------|-------------|
-| Claude | `${CLAUDE_HOME:-~/.claude}/skills` |
-| Codex | `${CODEX_HOME:-~/.codex}/skills` |
+| Claude | `${CLAUDE_HOME:-~/.claude}/skills`, `.../CLAUDE.md`, `.../rules/` |
+| Codex | `${CODEX_HOME:-~/.codex}/skills`, `.../AGENTS.md` |
 
 Codex receives a normalized `SKILL.md` frontmatter containing only `name` and
 `description`. Claude receives the canonical file as written, so Claude-only
