@@ -1,7 +1,55 @@
 {
   "includeCoAuthoredBy": false,
+  "model": "claude-fable-5[1m]",
   "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": false
   },
-  "skipDangerousModePermissionPrompt": true
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "agentPushNotifEnabled": true,
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skillOverrides": {
+    "adapt": "off",
+    "agents-sdk": "off",
+    "animate": "off",
+    "audit": "off",
+    "autoplan": "off",
+    "bolder": "off",
+    "cco": "off",
+    "clarify": "off",
+    "cloudflare": "off",
+    "cloudflare-email-service": "off",
+    "cloudflare-one": "off",
+    "cloudflare-one-migrations": "off",
+    "colorize": "off",
+    "copy-gstack": "off",
+    "create-pr": "off",
+    "delight": "off",
+    "design-review": "off",
+    "design-shotgun": "off",
+    "devex-review": "off",
+    "distill": "off",
+    "durable-objects": "off",
+    "eng-review": "off",
+    "extract": "off",
+    "harden": "off",
+    "normalize": "off",
+    "onboard": "off",
+    "optimize": "off",
+    "plan-design-review": "off",
+    "plan-devex-review": "off",
+    "polish": "off",
+    "pr-create": "off",
+    "pr-review": "off",
+    "quieter": "off",
+    "sandbox-sdk": "off",
+    "teach-impeccable": "off",
+    "turnstile-spin": "off",
+    "web-perf": "off",
+    "workers-best-practices": "off",
+    "wrangler": "off"
+  }
 }
