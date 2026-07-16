@@ -44,7 +44,6 @@ approve before moving to the next.
 | `devex-review` | `devex-review/` | Inline `dx-hall-of-fame.md` |
 | `eng-review` | `review/` | **Renamed** from `review` to `eng-review`; inline all `specialists/*.md` and `checklist.md`/`design-checklist.md`/`TODOS-format.md` |
 | `design-consultation` | `design-consultation/` | Standard clean |
-| `design-shotgun` | `design-shotgun/` | Reframe `design` (GPT Image) calls as self-contained HTML+Tailwind |
 | `design-html` | `design-html/` | **Vendor** `vendor/pretext.js` alongside; preserve all Pretext API references and CDN fallback |
 | `qa` | `qa/` | Inline `references/issue-taxonomy.md` and `templates/qa-report-template.md`; replace `$B` browse calls with tool-agnostic prose |
 | `office-hours` | `office-hours/` | **PORT ONLY.** User's local v3.x.x is a polished fork. Do not overwrite. Diff and surface only substantive new content (new questions, sharper framings, anti-sycophancy rules). User cherry-picks. |
