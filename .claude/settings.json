@@ -1,5 +1,10 @@
 {
   "includeCoAuthoredBy": false,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline-milestones.py",
+    "padding": 0
+  },
   "model": "claude-fable-5[1m]",
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": false
