@@ -24,7 +24,7 @@ Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, again
 
 ### 2. Identify the spec source
 
-In order: an issue number the user passed or `#N` references in commit messages — `gh issue view <n>` for its **What to build** and **Acceptance criteria** plus the spec it links; the module spec under `docs/specs/` or a path the user passed; otherwise ask. If there genuinely isn't one, the Spec axis skips and the report says "no spec available".
+In order: a ticket id the user passed or `#N` references in commit messages — load it (consult `/tracker` for the platform) for its **What to build** and **Acceptance criteria**, plus the module spec its parent ticket links; the module spec under `docs/specs/` or a path the user passed; otherwise ask. If there genuinely isn't one, the Spec axis skips and the report says "no spec available".
 
 ### 3. Identify the standards sources
 

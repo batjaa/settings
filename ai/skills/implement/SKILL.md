@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Work one ticket (GitHub issue) or a markdown plan end to end — pre-flight, /tdd execution with verification, then /implementation-review (bugs + spec + standards + design), then /commit-and-push and close. One ticket per session.
+description: Work one tracker ticket or a markdown plan end to end — pre-flight, /tdd execution with verification, then /implementation-review (bugs + spec + standards + design), then /commit-and-push and close. One ticket per session.
 disable-model-invocation: true
 argument-hint: [issue-number | path-to-plan.md]
 ---
@@ -11,8 +11,8 @@ Drive one unit of work to done. **One ticket per session** — finish it, close 
 
 ## Step 0: Load the work
 
-- **Issue number** → `gh issue view <n>` with comments; read the spec it links. If any `Blocked by` issue is still open, stop and say so.
-- **No argument** → find the frontier: open issues labelled `ticket` (current module's milestone first) whose Blocked-by issues are all closed. Propose the first; confirm before starting.
+- **Ticket id** → load it with its comments (consult `/tracker` for this repo's platform); read the spec via its module parent or `## Spec` link. If anything still blocks it, stop and say so.
+- **No argument** → run `/tracker`'s frontier query on the active module's parent: open children whose blockers are all closed. Propose the first; confirm before starting.
 - **Markdown path** → plan mode: treat each section/step of the file as a mini-ticket and run this same loop over them, checking off boxes in the file as you go.
 
 ## Step 1: Pre-flight
@@ -34,8 +34,8 @@ Drive one unit of work to done. **One ticket per session** — finish it, close 
 1. **Full relevant test suite** passes; app builds/starts.
 2. **`/implementation-review`** against the ticket — one pass covering Bugs (delegates to the built-in `/code-review`), Spec (every acceptance criterion demonstrably met, nothing missing, no scope creep), Standards, and Design. Fix confirmed findings; note accepted deviations in the closing comment.
 3. **`/commit-and-push`** — it handles `/simplify`, staging, conventional commits, push.
-4. **Close the ticket**: check off its acceptance criteria, comment with what shipped (commits, verification done, deviations), `gh issue close <n>`.
-5. **Roadmap**: if this was the module's last open ticket, flip its status to `done` in `docs/ROADMAP.md` and commit; run a branch-level `/implementation-review` (or `/code-review ultra`) before merging `feat/<module>`.
+4. **Resolve the ticket** (per `/tracker`): check off its acceptance criteria, comment with what shipped (commits, verification done, deviations), close it — the module parent's progress rolls up automatically.
+5. **Module rollup**: if this was the module's last open ticket, close the parent ticket, flip the module to `done` in `docs/ROADMAP.md`, and commit; run a branch-level `/implementation-review` (or `/code-review ultra`) before merging `feat/<module>`.
 
 ## Rules
 

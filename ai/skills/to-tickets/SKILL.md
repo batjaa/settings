@@ -1,13 +1,13 @@
 ---
 name: to-tickets
-description: Break a spec into tracer-bullet vertical-slice tickets with Blocked-by edges and publish them as GitHub issues under a per-module milestone — after a granularity check with the user. Feeds /implement.
+description: Break a spec into tracer-bullet vertical-slice tickets with Blocked-by edges and publish them to the repo's tracker — a module parent ticket with the tickets as children (GitHub sub-issues by default; see /tracker) — after a granularity check with the user. Feeds /implement.
 disable-model-invocation: true
 argument-hint: [path-to-spec.md]
 ---
 
 # To Tickets
 
-Break a spec into **tracer-bullet tickets** — vertical slices, each declaring the tickets that block it — and publish them as GitHub issues.
+Break a spec into **tracer-bullet tickets** — vertical slices, each declaring the tickets that block it — and publish them to the repo's tracker as children of one **module parent ticket**.
 
 ## Process
 
@@ -28,12 +28,15 @@ Read the spec (argument, or the module the conversation is about). Explore the c
 
 Present the breakdown as a numbered list — per ticket: **Title**, **Blocked by**, **What it delivers** (end-to-end behavior). Ask: granularity right? edges correct — does each ticket only depend on what genuinely gates it? merge or split anything? Iterate until approved.
 
-### 4. Publish to GitHub
+### 4. Publish to the tracker
 
-- Milestone = module name: `gh api repos/{owner}/{repo}/milestones -f title=<module>` if it doesn't exist (`gh api repos/{owner}/{repo}/milestones` to check).
-- Create issues **in dependency order, blockers first**, so Blocked-by lines can cite real numbers: `gh issue create --title <t> --body <b> --milestone <module> --label ticket` (create the `ticket` label once per repo if missing).
-- The body's `Blocked by` lines are canonical. Additionally wire GitHub's native blocked-by relationships where available so the frontier is visible in the UI — but don't fight the API if it isn't.
-- Do NOT close or modify the spec or any parent issue. Update the module's status to `ticketed` in `docs/ROADMAP.md` if it exists; commit that.
+Consult `/tracker` — it resolves this repo's platform and defines the exact commands. What to publish, in order:
+
+1. **Create the module parent ticket** — titled after the module, linking `docs/specs/<module>.md` and the roadmap. Every ticket below hangs off it (GitHub: native sub-issues), so progress rolls up on the parent.
+2. **Create the tickets as children, in dependency order** (blockers first, so edges can cite real identifiers).
+3. **Wire the blocking edges** — `Blocked by` body lines always; native dependency links on top where the platform has them.
+
+Do NOT close or modify the spec. Update the module's status to `ticketed` in `docs/ROADMAP.md` if it exists; commit that.
 
 Issue body template — avoid file paths and code snippets (stale fast; same prototype-snippet exception as `/to-spec`):
 

@@ -66,7 +66,7 @@ Two modes. Either way, **resolve at most one open decision per session** — dep
 ### Work (given an existing map)
 
 1. Load the map. Pick the decision: the user's, or the one unblocking the most modules.
-2. Resolve it with the right tool: `/grilling` + `/domain-modeling` for decisions the user owns (the default); `/research` for external reading (docs, APIs) — its markdown summary becomes the linked asset; `/prototype` when "how should it behave/look" needs a cheap concrete artifact to react to (`/design-explore` for pure visual directions). If it needs async work outside this session (an experiment, a service signup), open a GitHub issue labelled `wayfinder` and link it instead of stalling.
+2. Resolve it with the right tool: `/grilling` + `/domain-modeling` for decisions the user owns (the default); `/research` for external reading (docs, APIs) — its markdown summary becomes the linked asset; `/prototype` when "how should it behave/look" needs a cheap concrete artifact to react to (`/design-explore` for pure visual directions). If it needs async work outside this session (an experiment, a service signup), open a tracker issue labelled `wayfinder` (see `/tracker`) and link it instead of stalling.
 3. Record it: one line in Decisions so far, detail wherever it naturally lives. Graduate any fog the answer sharpened; update module statuses and dependencies.
 4. When a module's status flips to `ready-to-spec`, say so and suggest `/to-spec <module>`.
 5. Commit the map update.
