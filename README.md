@@ -98,6 +98,7 @@ open /Applications/Hammerspoon.app
 | `karabiner/` | Karabiner-Elements keyboard customization |
 | `keyboard/` | Keychron Q1 keyboard configuration and keymaps |
 | `sublime/` | Sublime Text snippets and settings |
+| `cursor/` | Cursor user settings, installed by `bootstrap.sh` |
 | `git/` | Git merge tool and advanced git configurations |
 | `bin/` | Custom executable scripts |
 

@@ -1,0 +1,187 @@
+{
+  "window.title": "${remoteName}${separator}${rootName}${separator}${activeEditorShort}${separator}${appName}",
+  "remote.SSH.defaultExtensions": [
+    "anysphere.cursorpyright",
+    "datadog.datadog-vscode",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "firsttris.vscode-jest-runner",
+    "golang.go",
+    "hashicorp.terraform",
+    "jebbs.plantuml",
+    "mechatroner.rainbow-csv",
+    "mkhl.direnv",
+    "ms-playwright.playwright",
+    "ms-python.debugpy",
+    "ms-python.python",
+    "naumovs.color-highlight",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "graphql.vscode-graphql",
+    "streetsidesoftware.code-spell-checker",
+    "wallabyjs.quokka-vscode",
+    "zxh404.vscode-proto3",
+  ],
+  "editor.rulers": [80],
+  "workbench.tree.indent": 16,
+  "terminal.integrated.scrollback": 10000,
+  "git.mergeEditor": true,
+  "extensions.autoUpdate": "onlyEnabledExtensions",
+  "go.testTimeout": "300s",
+  "go.lintOnSave": "file",
+  "go.formatTool": "goimports",
+  "[go]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+    },
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/*.js": {
+      "when": "$(basename).ts",
+    },
+    "**/*.d.ts": {
+      "when": "$(basename).ts",
+    },
+    "!**/*.graphql.d.ts": false,
+  },
+  "[python]": {
+    "editor.formatOnType": true,
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.fontFamily": "Comic Code Ligatures, Monaco, 'Courier New', monospace",
+  "typescript.preferences.quoteStyle": "single",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+  },
+  "githubPullRequests.pullBranch": "never",
+  "eslint.codeActionsOnSave.rules": null,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "typescript.tsserver.maxTsServerMemory": 8192,
+  "cSpell.userWords": [
+    "Automations",
+    "notificationscommon",
+    "samsaradev",
+    "settingsproto",
+    "sint",
+    "webexperience",
+    "webexperienceadmin"
+  ],
+  "cursor.cpp.disabledLanguages": ["plaintext", "markdown", "scminput"],
+  "accessibility.signals.lineHasWarning": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.positionHasWarning": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.positionHasError": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.noInlayHints": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.voiceRecordingStopped": {
+    "sound": "off",
+  },
+  "accessibility.signals.voiceRecordingStarted": {
+    "sound": "off",
+  },
+  "accessibility.signals.terminalQuickFix": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.terminalCommandSucceeded": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.terminalCommandFailed": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.onDebugBreak": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.notebookCellFailed": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasInlineSuggestion": {
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasFoldedArea": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasError": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasBreakpoint": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "accessibility.signals.diffLineModified": {
+    "sound": "off",
+  },
+  "accessibility.signals.diffLineInserted": {
+    "sound": "off",
+  },
+  "accessibility.signals.diffLineDeleted": {
+    "sound": "off",
+  },
+  "accessibility.signals.codeActionTriggered": {
+    "sound": "off",
+  },
+  "accessibility.signals.codeActionApplied": {
+    "sound": "off",
+  },
+  "accessibility.signals.clear": {
+    "announcement": "off",
+    "sound": "off",
+  },
+  "go.gopath": "",
+  "typescript.tsserver.watchOptions": "vscode",
+  "redhat.telemetry.enabled": false,
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml",
+    "editor.tabSize": 4,
+  },
+  "plantuml.commandArgs": [],
+  "go.buildFlags": [],
+  "go.languageServerFlags": [],
+  "git.blame.editorDecoration.enabled": false,
+  "go.toolsManagement.autoUpdate": true,
+  "remote.SSH.remotePlatform": {
+    "devbox": "linux",
+    "devbox-1": "linux",
+    "devbox-2": "linux",
+    "devbox-3": "linux",
+    "devbox-4": "linux"
+  },
+  "workbench.externalBrowser": "chrome",
+  "remote.autoForwardPortsSource": "hybrid",
+  "datadog.codeSecurity.notification.suppressOnboarding": true,
+  "datadog.cursor.notification.suppressMcpMigrationMessage": true,
+  "files.associations": {
+    "*.plan.md": "markdown"
+  },
+  "window.autoDetectColorScheme": false,
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.editor.enablePreviewFromCodeNavigation": true,
+  "workbench.editorAssociations": {
+    "*.html": "default"
+  },
+  "datadog.connection.notification.suppressSignInNotification": true,
+}

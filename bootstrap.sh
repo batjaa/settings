@@ -3,7 +3,8 @@
 cd "$(dirname "${BASH_SOURCE}")";
 
 function doIt() {
-    mkdir -p ~/.codex ~/.claude ~/.config/nvim ~/.config/tmux;
+    mkdir -p ~/.codex ~/.claude ~/.config/nvim ~/.config/tmux \
+        ~/Library/Application\ Support/Cursor/User;
     rsync --exclude ".git/" \
         --exclude ".DS_Store" \
         --exclude ".macos" \
@@ -13,6 +14,7 @@ function doIt() {
         --exclude "iterm2" \
         --exclude "karabiner" \
         --exclude "sublime" \
+        --exclude "cursor" \
         --exclude "ai" \
         --exclude ".claude/skills" \
         --exclude ".codex/skills" \
@@ -20,6 +22,9 @@ function doIt() {
         --exclude ".hammerspoon" \
         --exclude "settings.sublime-*" \
         -avh --no-perms . ~;
+    rsync -avh --no-perms \
+        cursor/settings.json \
+        ~/Library/Application\ Support/Cursor/User/settings.json;
     ./bin/ai-sync --home;
     source ~/.bash_profile;
 }
