@@ -18,13 +18,13 @@
 - For SVG to PNG conversion, don't assume ImageMagick will preserve the full asset. If fidelity matters, verify the rendered output and prefer `rsvg-convert` over `magick` / `convert` when available.
 
 ## Workflow
-- PRD pipeline: `/wayfinder` (PRD → `docs/ROADMAP.md` modules) → `/to-spec` (module → `docs/specs/*.md`) → `/to-tickets` (spec → module parent ticket + child tickets, per `/tracker`) → `/implement` (one ticket per session, review + spec-check baked in).
+- PRD pipeline: `$wayfinder` (PRD → `docs/ROADMAP.md` modules) → `$to-spec` (module → `docs/specs/*.md`) → `$to-tickets` (spec → module parent ticket + child tickets, per `$tracker`) → `$implement` (one ticket per session, review + spec-check baked in).
 - I write implementation plans as markdown specs. Follow them step-by-step, committing after each logical unit.
 - After implementing, verify the change works before moving on (run the app, check output, run tests).
 - When I say "commit and push", stage relevant files, write a conventional commit message, and push.
 
 ## Design
-- When I ask for design variants, generate 3–5 distinct directions (not minor tweaks). Use `/design-explore`.
+- When I ask for design variants, generate 3–5 distinct directions (not minor tweaks). Use `$design-explore`.
 - Each variant: distinct name, self-contained HTML, Tailwind only, Google Fonts, realistic placeholder content.
 - I'll pick favorites and ask for a hybrid. Iterate until approved, then implement in the real codebase.
 
@@ -63,4 +63,4 @@
 - **Queue**: `database` driver. Ensure Forge queue worker is configured.
 - **Deployment**: Forge deploys to `~/site.app/current` (symlinked). Production `.env` lives there.
 - **Nova**: Requires paid license + `auth.json`. Set `withAuthenticationRoutes(default: false)` to avoid Breeze route conflict. Add `NOVA_USERNAME`/`NOVA_PASSWORD` as GitHub secrets. Add `/public/vendor` to `.gitignore`.
-- **Setup skills**: Use `/stripe-setup`, `/r2-setup`, `/postmark-setup`, `/nova-setup` for guided integration setup.
+- **Setup skills**: Use `$stripe-setup`, `$r2-setup`, `$postmark-setup`, `$nova-setup` for guided integration setup.

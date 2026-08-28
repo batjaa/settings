@@ -31,8 +31,10 @@ By default this syncs Claude and Codex:
 | Codex | `${CODEX_HOME:-~/.codex}/skills`, `.../AGENTS.md` |
 
 Codex receives a normalized `SKILL.md` frontmatter containing only `name` and
-`description`. Claude receives the canonical file as written, so Claude-only
-keys such as `allowed-tools` can stay in the source when needed.
+`description`. References to managed skills are also rendered using Codex's
+`$skill-name` invocation syntax instead of Claude's `/skill-name` syntax.
+Claude receives the canonical file as written, so Claude-only keys such as
+`allowed-tools` can stay in the source when needed.
 
 The sync replaces only skill directories whose names exist in `ai/skills`.
 Marketplace, system, or manually installed provider skills with other names are
