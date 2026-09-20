@@ -246,11 +246,17 @@ Install your custom fonts from Google Drive backup.
 
 #### Node.js (via nvm)
 
-```bash
-# Load nvm (should be in .bash_profile)
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+Shell startup reuses `HOMEBREW_PREFIX`, falling back to one `brew --prefix`
+lookup when needed. The Git prompt uses one porcelain status query per prompt
+for the branch and dirty marker, including untracked files and detached HEAD.
 
+The Bash configuration loads NVM on the first `nvm`, `node`, `npm`, `npx`, or
+`yarn` command, using the shared `.nvm_lazy` helper. It preserves an inherited
+Node version and selects the NVM default only when no Node executable is on
+`PATH`. Keep eager `nvm.sh` sourcing out of `~/.extra` and other startup files.
+Install `~/.nvm_lazy` alongside `~/.bash_profile`; bootstrap copies both files.
+
+```bash
 # Install latest LTS
 nvm install --lts
 nvm use --lts

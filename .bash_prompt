@@ -35,12 +35,22 @@ else
 fi
 
 
-function parse_git_dirty() {
-    [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
-}
-
 function parse_git_branch() {
-    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(parse_git_dirty)/"
+    local status line branch="" oid="" dirty=""
+    # One locale-independent query for both branch and working-tree state.
+    status=$(GIT_OPTIONAL_LOCKS=0 git status --porcelain=v2 --branch --untracked-files=normal 2>/dev/null) || return 0
+    while IFS= read -r line; do
+        case "$line" in
+            '# branch.head '*) branch="${line#\# branch.head }" ;;
+            '# branch.oid '*) oid="${line#\# branch.oid }" ;;
+            '# '*) ;;
+            '') ;;
+            *) dirty="*" ;;
+        esac
+    done <<< "$status"
+    [ -n "$branch" ] || return 0
+    [ "$branch" != '(detached)' ] || branch="detached:${oid:0:7}"
+    printf ' on %s%s' "$branch" "$dirty"
 }
 
 # iTerm Tab and Title Customization and prompt customization
@@ -54,4 +64,4 @@ function parse_git_branch() {
 # in the iterm tab
 # \[\e]1;\]$(basename $(dirname $PWD))/\W\[\a\]
 
-PS1="\[\e]2;$PWD\[\a\]\[\e]1;\]$(basename "$(dirname "$PWD")")/\W\[\a\]\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"
+PS1="\[\e]2;$PWD\[\a\]\[\e]1;\]$(basename "$(dirname "$PWD")")/\W\[\a\]\[${BOLD}${MAGENTA}\]\u \[$WHITE\]at \[$ORANGE\]\h \[$WHITE\]in \[$GREEN\]\w\[$WHITE\]\[$PURPLE\]\$(parse_git_branch)\[$WHITE\]\n\$ \[$RESET\]"

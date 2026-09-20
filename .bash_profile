@@ -1,5 +1,7 @@
-# Add brew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Reuse Homebrew's environment in child shells.
+if [ -z "${HOMEBREW_PREFIX:-}" ] || ! command -v brew >/dev/null 2>&1; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Add `~/bin` to the `$PATH`
 export PATH="$HOME/bin:$PATH";
@@ -26,13 +28,18 @@ for option in autocd globstar; do
 done;
 
 # Add tab completion for many Bash commands
-if which brew &> /dev/null && [ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]; then
+_settings_brew_prefix="${HOMEBREW_PREFIX:-}"
+if [ -z "$_settings_brew_prefix" ] && command -v brew >/dev/null 2>&1; then
+  _settings_brew_prefix="$(brew --prefix)"
+fi
+if [ -n "$_settings_brew_prefix" ] && [ -r "$_settings_brew_prefix/etc/profile.d/bash_completion.sh" ]; then
   # Ensure existing Homebrew v1 completions continue to work
-  export BASH_COMPLETION_COMPAT_DIR="$(brew --prefix)/etc/bash_completion.d";
-  source "$(brew --prefix)/etc/profile.d/bash_completion.sh";
+  export BASH_COMPLETION_COMPAT_DIR="$_settings_brew_prefix/etc/bash_completion.d";
+  source "$_settings_brew_prefix/etc/profile.d/bash_completion.sh";
 elif [ -f /etc/bash_completion ]; then
   source /etc/bash_completion;
 fi;
+unset _settings_brew_prefix
 
 # Enable tab completion for `g` by marking it as an alias for `git`
 if type _git &> /dev/null; then
@@ -45,8 +52,5 @@ fi;
 # Add direnv hook
 eval "$(direnv hook bash)"
 
-# Add nvm
-export NVM_DIR="$HOME/.nvm"
-. /opt/homebrew/opt/nvm/nvm.sh # This loads nvm
-. /opt/homebrew/opt/nvm/etc/bash_completion.d/nvm # This loads nvm bash_completion
-
+# Add NVM lazily; the legacy bootstrap copies this helper into $HOME.
+[ ! -r "$HOME/.nvm_lazy" ] || . "$HOME/.nvm_lazy"

@@ -1,0 +1,41 @@
+# Load NVM only when a Node command is first used.
+if [ -z "${NVM_DIR:-}" ]; then
+    if [ -n "${XDG_CONFIG_HOME:-}" ]; then
+        NVM_DIR="$XDG_CONFIG_HOME/nvm"
+    else
+        NVM_DIR="$HOME/.nvm"
+    fi
+fi
+export NVM_DIR
+if ! type nvm >/dev/null 2>&1; then
+    _settings_nvm_script=""
+    for _settings_nvm_candidate in "$NVM_DIR/nvm.sh" \
+        "${HOMEBREW_PREFIX:-/opt/homebrew}/opt/nvm/nvm.sh" \
+        /usr/local/opt/nvm/nvm.sh /home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh; do
+        if [ -r "$_settings_nvm_candidate" ]; then
+            _settings_nvm_script="$_settings_nvm_candidate"
+            break
+        fi
+    done
+    if [ -n "$_settings_nvm_script" ]; then
+        _settings_nvm_run() {
+            local requested="$1"
+            shift
+            unset -f nvm node npm npx yarn
+            # Preserve an inherited or project-selected Node version.
+            . "$_settings_nvm_script" --no-use || return
+            unset _settings_nvm_script
+            unset -f _settings_nvm_run
+            if [ "$requested" != nvm ] && ! command -v node >/dev/null 2>&1; then
+                nvm use --silent default || return
+            fi
+            "$requested" "$@"
+        }
+        nvm() { _settings_nvm_run nvm "$@"; }
+        node() { _settings_nvm_run node "$@"; }
+        npm() { _settings_nvm_run npm "$@"; }
+        npx() { _settings_nvm_run npx "$@"; }
+        yarn() { _settings_nvm_run yarn "$@"; }
+    fi
+    unset _settings_nvm_candidate
+fi
